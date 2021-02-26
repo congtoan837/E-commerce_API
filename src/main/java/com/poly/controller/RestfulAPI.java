@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -254,7 +255,7 @@ public class RestfulAPI {
 	// API BLOG //
 	
 	// API ACCOUNT //
-	@PostMapping("/listaccount")
+	@GetMapping("/listaccount")
 	List<Admins> listaccount() {
 		return (List<Admins>) adminRepository.findAll();
 	}
