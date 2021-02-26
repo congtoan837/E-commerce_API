@@ -15,7 +15,7 @@ import com.poly.model.*;
 import com.poly.repositories.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080, webdemodoan.herokuapp.com")
+@CrossOrigin(origins = "webdemodoan.herokuapp.com")
 @RequestMapping("/api")
 public class RestfulAPI {
 	@Autowired
