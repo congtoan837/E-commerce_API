@@ -237,14 +237,26 @@ public class RestfulAPI {
 	@PostMapping("/editpromo")
 	Promotion editpromo(@RequestBody Promotion promotion) throws Exception {
 		Integer id = promotion.getId();
-		
+		if (promotion.getImage() == ("")) {
 			return promotionRepository.findById(id).<Promotion>map(mypromo -> {
 				mypromo.setPercents(promotion.getPercents());
+				mypromo.setCoupon(promotion.getCoupon());
 				mypromo.setTimeStart(promotion.getTimeStart());
 				mypromo.setTimeEnd(promotion.getTimeEnd());
 				mypromo.setDescription(promotion.getDescription());
 				return promotionRepository.save(mypromo);
-			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));						
+			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));	
+		}else {
+			return promotionRepository.findById(id).<Promotion>map(mypromo -> {
+				mypromo.setPercents(promotion.getPercents());
+				mypromo.setCoupon(promotion.getCoupon());
+				mypromo.setImage(promotion.getImage());
+				mypromo.setTimeStart(promotion.getTimeStart());
+				mypromo.setTimeEnd(promotion.getTimeEnd());
+				mypromo.setDescription(promotion.getDescription());
+				return promotionRepository.save(mypromo);
+			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));	
+		}
 	}
 
 	@PostMapping("/deletepromo")
