@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class OrderDetails implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int OrderDetailsId;
+	private int Id;
 	@Column(name = "Quantity")
 	private int Quantity;
 	@Column(name = "TotalPrice")
@@ -37,10 +37,10 @@ public class OrderDetails implements Serializable {
 	public OrderDetails() {
 		super();
 	}
-	public OrderDetails(int orderDetailsId, int quantity, int totalPrice, int productId, int promotionId,
+	public OrderDetails(int id, int quantity, int totalPrice, int productId, int promotionId,
 			int customerId, String status, int paymentId, String createTime) {
 		super();
-		OrderDetailsId = orderDetailsId;
+		Id = id;
 		Quantity = quantity;
 		TotalPrice = totalPrice;
 		ProductId = productId;
@@ -50,11 +50,11 @@ public class OrderDetails implements Serializable {
 		PaymentId = paymentId;
 		CreateTime = createTime;
 	}
-	public int getOrderDetailsId() {
-		return OrderDetailsId;
+	public int getId() {
+		return Id;
 	}
-	public void setOrderDetailsId(int orderDetailsId) {
-		OrderDetailsId = orderDetailsId;
+	public void setId(int id) {
+		Id = id;
 	}
 	public int getQuantity() {
 		return Quantity;
