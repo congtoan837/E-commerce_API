@@ -22,7 +22,7 @@ public class OrderDetails implements Serializable {
 	@Column(name = "ProductId")
 	private int ProductId;
 	@Column(name = "PromotionId")
-	private int PromotionId;
+	private String Promotion;
 	@Column(name = "CustomerId")
 	private int CustomerId;
 	@Column(name = "Status")
@@ -37,14 +37,14 @@ public class OrderDetails implements Serializable {
 	public OrderDetails() {
 		super();
 	}
-	public OrderDetails(int id, int quantity, int totalPrice, int productId, int promotionId,
+	public OrderDetails(int id, int quantity, int totalPrice, int productId, String promotion,
 			int customerId, String status, int paymentId, String createTime) {
 		super();
 		Id = id;
 		Quantity = quantity;
 		TotalPrice = totalPrice;
 		ProductId = productId;
-		PromotionId = promotionId;
+		Promotion = promotion;
 		CustomerId = customerId;
 		Status = status;
 		PaymentId = paymentId;
@@ -74,11 +74,11 @@ public class OrderDetails implements Serializable {
 	public void setProductId(int productId) {
 		ProductId = productId;
 	}
-	public int getPromotionId() {
-		return PromotionId;
+	public String getPromotion() {
+		return Promotion;
 	}
-	public void setPromotionId(int promotionId) {
-		PromotionId = promotionId;
+	public void setPromotion(String promotion) {
+		Promotion = promotion;
 	}
 	public int getCustomerId() {
 		return CustomerId;
