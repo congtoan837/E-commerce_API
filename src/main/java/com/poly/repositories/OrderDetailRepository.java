@@ -3,9 +3,9 @@ package com.poly.repositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.poly.model.Cart;
+import com.poly.model.OrderDetails;
 
 @Repository
-public interface CartRepository extends CrudRepository<Cart, Integer> {
+public interface OrderDetailRepository extends CrudRepository<OrderDetails, Integer> {
 
 }

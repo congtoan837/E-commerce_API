@@ -34,6 +34,8 @@ public class RestfulAPI {
 	private CustomerRepository customerRepository;
 	@Autowired
 	private AdminRepository adminRepository;
+	@Autowired
+	private OrderDetailRepository orderDetailRepository;
 	
 	DateFormat format = new SimpleDateFormat("dd/mm/YYYY");
 	
@@ -297,10 +299,16 @@ public class RestfulAPI {
 	// API ACCOUNT //
 	
 	// API CART //
-	
 	@PostMapping("/cart")
-	public List<String> cart() {
-		return cartRepository.fetchEmpDeptDataInnerJoin();
+	List<Cart> cart() {
+		return (List<Cart>) cartRepository.findAll();
 	}
 	// API CART //
+	
+	// API ORDER //
+	@PostMapping("/listorder")
+	List<OrderDetails> listorder() {
+		return (List<OrderDetails>) orderDetailRepository.findAll();
+	}
+	// API ORDER //
 }
