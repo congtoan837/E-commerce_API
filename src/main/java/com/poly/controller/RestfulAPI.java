@@ -1,6 +1,5 @@
 package com.poly.controller;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -37,7 +36,14 @@ public class RestfulAPI {
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
 	
-	DateFormat format = new SimpleDateFormat("dd/mm/YYYY");
+	
+	// API LOGIN //
+	@PostMapping("/login")
+	List<Admins> all(@RequestBody Admins admins) {
+		return (List<Admins>) adminRepository.login(admins.getName(), admins.getPassword());
+	}
+	
+	// API LOGIN //
 	
 	// API CUSTOMER //
 		@PostMapping("/listcustomer")
