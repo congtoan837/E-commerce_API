@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,10 +28,6 @@ public class Blog implements Serializable{
 	@Column(name = "CreateBy")
     private String CreateBy;
 	
-	public Blog() {
-		super();
-	}	
-
 	public Blog(int id, String title, String image, String content, String description, String createBy) {
 		super();
 		Id = id;

@@ -1,6 +1,5 @@
 package com.poly.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,6 @@ public class RestfulAPI {
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
 	
-	
-	// API LOGIN //
-	@PostMapping("/login")
-	List<Admins> all(@RequestBody Admins admins) {
-		return (List<Admins>) adminRepository.login(admins.getName(), admins.getPassword());
-	}
-	
-	// API LOGIN //
 	
 	// API CUSTOMER //
 		@PostMapping("/listcustomer")
@@ -208,7 +199,7 @@ public class RestfulAPI {
 				myblog.setTitle(blog.getTitle());
 				myblog.setDescription(blog.getDescription());
 				myblog.setContent(blog.getContent());
-				myblog.setCreateBy(blog.getCreateBy());
+//				myblog.setCreateBy(blog.getCreateBy());
 				return blogRepository.save(myblog);
 			}).orElseThrow(() -> new Exception("Blog " + blog.getTitle() + " not found"));
 		} else {
@@ -217,7 +208,7 @@ public class RestfulAPI {
 				myblog.setImage(blog.getImage());
 				myblog.setDescription(blog.getDescription());
 				myblog.setContent(blog.getContent());
-				myblog.setCreateBy(blog.getCreateBy());
+//				myblog.setCreateBy(blog.getCreateBy());
 				return blogRepository.save(myblog);
 			}).orElseThrow(() -> new Exception("Blog " + id + " not found"));
 		}
@@ -317,4 +308,8 @@ public class RestfulAPI {
 		return (List<OrderDetails>) orderDetailRepository.findAll();
 	}
 	// API ORDER //
+	@PostMapping("/a")
+	List<AdminBlog> a() {
+		return (List<AdminBlog>) blogRepository.innerjoin();
+	}
 }
