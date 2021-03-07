@@ -30,7 +30,7 @@ public class Blog implements Serializable{
 		super();
 	}
 
-	public Blog(int id, String title, String image, String content, String description, int createBy) {
+	public Blog(Integer id, String title, String image, String content, String description, int createBy) {
 		super();
 		Id = id;
 		Title = title;
@@ -40,11 +40,11 @@ public class Blog implements Serializable{
 		CreateBy = createBy;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return Id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		Id = id;
 	}
 
