@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,7 +14,7 @@ import javax.persistence.Table;
 public class Blog implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int Id;
+	private Integer Id;
 	@Column(name = "Title")
     private String Title;
 	@Column(name = "Image")
@@ -26,9 +24,13 @@ public class Blog implements Serializable{
 	@Column(name = "Description")
     private String Description;
 	@Column(name = "CreateBy")
-    private String CreateBy;
+    private int CreateBy;
 	
-	public Blog(int id, String title, String image, String content, String description, String createBy) {
+	public Blog() {
+		super();
+	}
+
+	public Blog(int id, String title, String image, String content, String description, int createBy) {
 		super();
 		Id = id;
 		Title = title;
@@ -78,11 +80,11 @@ public class Blog implements Serializable{
 		Description = description;
 	}
 
-	public String getCreateBy() {
+	public int getCreateBy() {
 		return CreateBy;
 	}
 
-	public void setCreateBy(String createBy) {
+	public void setCreateBy(int createBy) {
 		CreateBy = createBy;
 	}
 }
