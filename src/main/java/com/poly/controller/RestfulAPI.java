@@ -89,8 +89,8 @@ public class RestfulAPI {
 	
 	// API PRODUCT //
 	@PostMapping("/listproduct")
-	List<Product> allproduct() {
-		return (List<Product>) productRepository.findAll();
+	List<ProductDTO> allproduct() {
+		return (List<ProductDTO>) productRepository.innerjoin();
 	}
 
 	@PostMapping("/newproduct")
@@ -309,7 +309,7 @@ public class RestfulAPI {
 	}
 	// API ORDER //
 	@PostMapping("/a")
-	List<AdminBlog> a() {
-		return (List<AdminBlog>) blogRepository.innerjoin();
+	List<BlogDTO> a() {
+		return (List<BlogDTO>) blogRepository.innerjoin();
 	}
 }

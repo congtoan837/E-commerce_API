@@ -2,7 +2,7 @@ package com.poly.model;
 
 import java.io.Serializable;
 
-public class AdminBlog implements Serializable{
+public class BlogDTO implements Serializable{
 	private Integer Id;
 	private Integer IdAmin;
 	private String Name;
@@ -11,7 +11,7 @@ public class AdminBlog implements Serializable{
     private String Content;
     private String Description;   
     
-	public AdminBlog(Integer id, Integer idAmin, String name, String title, String image,
+	public BlogDTO(Integer id, Integer idAmin, String name, String title, String image,
 			String content, String description) {
 		super();
 		Id = id;
