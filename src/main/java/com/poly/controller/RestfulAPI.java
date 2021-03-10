@@ -1,18 +1,14 @@
 package com.poly.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poly.model.*;
 import com.poly.repositories.*;
@@ -304,36 +300,6 @@ public class RestfulAPI {
 	@PostMapping("/cart")
 	List<CartDTO> cart() {
 		return (List<CartDTO>) cartRepository.innerjoin();
-	}
-	
-	@PostMapping("buy/{id}")
-	public List<Item> buy(@PathVariable("id") Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
-		if (session.getAttribute("item") == null) {
-			List<Item> cart = new ArrayList<Item>();
-			cart.add(new Item(productRepository.getbyId(id), 1));
-			session.setAttribute("item", cart);
-			return cart;
-		} else {
-			List<Item> cart = (List<Item>) session.getAttribute("item");
-			int index = this.exists(id, cart);
-			if (index == -1) {
-				cart.add(new Item(productRepository.getbyId(id), 1));
-			} else {
-				int quantity = cart.get(index).getQuantity() + 1;
-				cart.get(index).setQuantity(quantity);
-			}
-			session.setAttribute("item", cart);
-			return cart;
-		}
-	}
-
-	private int exists(Integer id, List<Item> cart) {
-		for (int i = 0; i < cart.size(); i++) {
-			if (cart.get(i).getProduct().getId() == id) {
-				return i;
-			}
-		}
-		return -1;
 	}
 	// API CART //
 	
