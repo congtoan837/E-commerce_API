@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "localhost:8080")
 @RestController
-@RequestMapping("/")
 public class AuthController {
 
 	private static final Logger LOGGER = Logger.getLogger(Authentication.class);
