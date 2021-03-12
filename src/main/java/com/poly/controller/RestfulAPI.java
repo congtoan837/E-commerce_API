@@ -297,10 +297,10 @@ public class RestfulAPI {
 	// API ACCOUNT //
 	
 	// API CART //
-	@PostMapping("/cart")
-	List<CartDTO> cart() {
-		return (List<CartDTO>) cartRepository.innerjoin();
-	}
+//	@PostMapping("/cart")
+//	List<CartDTO> cart() {
+//		return (List<CartDTO>) cartRepository.innerjoin();
+//	}
 	// API CART //
 	
 	// API ORDER //
