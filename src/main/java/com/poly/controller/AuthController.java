@@ -21,7 +21,7 @@ import com.poly.services.AdminService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:8080/", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/")
 public class AuthController {
