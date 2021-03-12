@@ -21,7 +21,7 @@ import com.poly.services.AdminService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "localhost:8080")
+@CrossOrigin(origins = "*")
 @RestController
 public class AuthController {
 
