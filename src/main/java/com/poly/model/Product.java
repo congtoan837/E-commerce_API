@@ -1,12 +1,14 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,18 +28,20 @@ public class Product implements Serializable {
 	@Column(name = "Status", length = 50)
 	private String Status;
 	@Column(name = "Brand", length = 50)
-	private String Brand;
+	private Integer Brand;
 	@Column(name = "Quantity")
 	private int Quantity;
 	@Column(name = "Category", length = 50)
-	private String Category;
+	private Integer Category;
+	@ManyToMany(mappedBy = "product")
+	private Collection<Cart> cart;
 	
 	public Product() {
 		super();
 	}
 	
-	public Product(int id, String name, int price, String image, String description, String status, String brand,
-			int quantity, String category) {
+	public Product(int id, String name, int price, String image, String description, String status, Integer brand,
+			int quantity, Integer category) {
 		super();
 		Id = id;
 		Name = name;
@@ -85,10 +89,10 @@ public class Product implements Serializable {
 	public void setStatus(String status) {
 		Status = status;
 	}
-	public String getBrand() {
+	public Integer getBrand() {
 		return Brand;
 	}
-	public void setBrand(String brand) {
+	public void setBrand(Integer brand) {
 		Brand = brand;
 	}
 	public int getQuantity() {
@@ -97,10 +101,10 @@ public class Product implements Serializable {
 	public void setQuantity(int quantity) {
 		Quantity = quantity;
 	}
-	public String getCategory() {
+	public Integer getCategory() {
 		return Category;
 	}
-	public void setCategory(String category) {
+	public void setCategory(Integer category) {
 		Category = category;
 	}
 }

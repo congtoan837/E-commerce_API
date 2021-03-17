@@ -53,10 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception {
         auth.userDetailsService(adminServiceImp)
             .passwordEncoder(new MyPasswordEncoder());
-        auth.userDetailsService(customerServiceImp)
-        .passwordEncoder(new MyPasswordEncoder());
-        auth.inMemoryAuthentication()
-		.withUser("admin").password(PasswordEncoder().encode("admin123")).authorities("ADMIN");     
     }	
     
 	@Bean
@@ -79,12 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/buy*").permitAll()
 			.antMatchers("/api/cartSession*").permitAll()
 			.antMatchers("/api/remove/**").permitAll()
-//			.antMatchers("/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()
-//			.and()
-//			.logout().logoutRequestMatcher(new AntPathRequestMatcher("/admin/logout")).logoutSuccessUrl("/admin")
 			.and()
 			.httpBasic();			
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

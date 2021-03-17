@@ -1,10 +1,12 @@
 package com.poly.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +26,6 @@ public class RestfulAPI {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	@Autowired
-	private CartRepository cartRepository;
-	@Autowired
 	private BlogRepository blogRepository;
 	@Autowired
 	private PromotionRepository promotionRepository;
@@ -35,59 +35,58 @@ public class RestfulAPI {
 	private AdminRepository adminRepository;
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
-	
-	
+
 	// API CUSTOMER //
-		@PostMapping("/listcustomer")
-		List<Customer> allcustomer() {
-			return (List<Customer>) customerRepository.findAll();
-		}
+	@PostMapping("/listcustomer")
+	List<Customer> allcustomer() {
+		return (List<Customer>) customerRepository.findAll();
+	}
 
-		@PostMapping("/newcustomer")
-		Customer newProduct(@RequestBody Customer customer) {
-			return customerRepository.save(customer);
-		}
+	@PostMapping("/newcustomer")
+	Customer newProduct(@RequestBody Customer customer) {
+		return customerRepository.save(customer);
+	}
 
-		@PostMapping("/findcustomer")
-		Customer one(@RequestBody Customer customer) throws Exception {
-			Integer id = customer.getId();
-			return customerRepository.findById(id).orElseThrow(() -> new Exception("Customer " + id + " not found"));
-		}
+	@PostMapping("/findcustomer")
+	Customer one(@RequestBody Customer customer) throws Exception {
+		Integer id = customer.getId();
+		return customerRepository.findById(id).orElseThrow(() -> new Exception("Customer " + id + " not found"));
+	}
 
-		@PostMapping("/editcustomer")
-		Customer replaceCustomer(@RequestBody Customer customer) throws Exception {
-			Integer id = customer.getId();
-			if (customer.getImage() == ("")) {
-				return customerRepository.findById(id).<Customer>map(mycustomer -> {
-					mycustomer.setName(customer.getName());
-					mycustomer.setEmail(customer.getEmail());
-					mycustomer.setPhone(customer.getPhone());
-					mycustomer.setPassword(customer.getPassword());
-					mycustomer.setAddress(customer.getAddress());
-					mycustomer.setStatus(customer.getStatus());
-					return customerRepository.save(mycustomer);
-				}).orElseThrow(() -> new Exception("Customer " + id + " not found"));
-			} else {
-				return customerRepository.findById(id).<Customer>map(mycustomer -> {
-					mycustomer.setImage(customer.getImage());
-					mycustomer.setName(customer.getName());
-					mycustomer.setEmail(customer.getEmail());
-					mycustomer.setPhone(customer.getPhone());
-					mycustomer.setPassword(customer.getPassword());
-					mycustomer.setAddress(customer.getAddress());
-					mycustomer.setStatus(customer.getStatus());
-					return customerRepository.save(mycustomer);
-				}).orElseThrow(() -> new Exception("Customer " + id + " not found"));
-			}
+	@PostMapping("/editcustomer")
+	Customer replaceCustomer(@RequestBody Customer customer) throws Exception {
+		Integer id = customer.getId();
+		if (customer.getImage() == ("")) {
+			return customerRepository.findById(id).<Customer>map(mycustomer -> {
+				mycustomer.setName(customer.getName());
+				mycustomer.setEmail(customer.getEmail());
+				mycustomer.setPhone(customer.getPhone());
+				mycustomer.setPassword(customer.getPassword());
+				mycustomer.setAddress(customer.getAddress());
+				mycustomer.setStatus(customer.getStatus());
+				return customerRepository.save(mycustomer);
+			}).orElseThrow(() -> new Exception("Customer " + id + " not found"));
+		} else {
+			return customerRepository.findById(id).<Customer>map(mycustomer -> {
+				mycustomer.setImage(customer.getImage());
+				mycustomer.setName(customer.getName());
+				mycustomer.setEmail(customer.getEmail());
+				mycustomer.setPhone(customer.getPhone());
+				mycustomer.setPassword(customer.getPassword());
+				mycustomer.setAddress(customer.getAddress());
+				mycustomer.setStatus(customer.getStatus());
+				return customerRepository.save(mycustomer);
+			}).orElseThrow(() -> new Exception("Customer " + id + " not found"));
 		}
+	}
 
-		@PostMapping("/deletecustomer")
-		void deleteCustomer(@RequestBody Customer customer) {
-			Integer id = customer.getId();
-			customerRepository.deleteById(id);
-		}
-		// API CUSTOMER //
-	
+	@PostMapping("/deletecustomer")
+	void deleteCustomer(@RequestBody Customer customer) {
+		Integer id = customer.getId();
+		customerRepository.deleteById(id);
+	}
+	// API CUSTOMER //
+
 	// API PRODUCT //
 	@PostMapping("/listproduct")
 	List<ProductDTO> allproduct() {
@@ -139,6 +138,17 @@ public class RestfulAPI {
 		Integer id = product.getId();
 		productRepository.deleteById(id);
 	}
+
+	@PostMapping("/ProductByBrand/{id}")
+	List<Product> ProductByBrand(@PathVariable("id") Integer id) {
+		return (List<Product>) productRepository.findProductByBrand(id);
+	}
+
+	@PostMapping("/countProductByBrand/{id}")
+	int countProductByBrand(@PathVariable("id") Integer id) {
+		return productRepository.countProductByBrand(id);
+	}
+
 	// API PRODUCT //
 
 	// API BRAND //
@@ -200,16 +210,16 @@ public class RestfulAPI {
 				myblog.setTitle(blog.getTitle());
 				myblog.setDescription(blog.getDescription());
 				myblog.setContent(blog.getContent());
-//				myblog.setCreateBy(blog.getCreateBy());
+				myblog.setCreateBy(blog.getCreateBy());
 				return blogRepository.save(myblog);
 			}).orElseThrow(() -> new Exception("Blog " + blog.getTitle() + " not found"));
 		} else {
 			return blogRepository.findById(id).<Blog>map(myblog -> {
-				myblog.setTitle("11");
+				myblog.setTitle(blog.getTitle());
 				myblog.setImage(blog.getImage());
 				myblog.setDescription(blog.getDescription());
 				myblog.setContent(blog.getContent());
-//				myblog.setCreateBy(blog.getCreateBy());
+				myblog.setCreateBy(blog.getCreateBy());
 				return blogRepository.save(myblog);
 			}).orElseThrow(() -> new Exception("Blog " + id + " not found"));
 		}
@@ -222,7 +232,7 @@ public class RestfulAPI {
 	}
 
 	// API BLOG //
-	
+
 	// API PROMOTION //
 	@PostMapping("/listpromo")
 	List<Promotion> listPromo() {
@@ -230,7 +240,7 @@ public class RestfulAPI {
 	}
 
 	@PostMapping("/newpromo")
-	Promotion newpromo(@RequestBody Promotion promotion) {			
+	Promotion newpromo(@RequestBody Promotion promotion) {
 		return promotionRepository.save(promotion);
 	}
 
@@ -245,8 +255,8 @@ public class RestfulAPI {
 				mypromo.setTimeEnd(promotion.getTimeEnd());
 				mypromo.setDescription(promotion.getDescription());
 				return promotionRepository.save(mypromo);
-			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));	
-		}else {
+			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));
+		} else {
 			return promotionRepository.findById(id).<Promotion>map(mypromo -> {
 				mypromo.setPercents(promotion.getPercents());
 				mypromo.setCoupon(promotion.getCoupon());
@@ -255,18 +265,18 @@ public class RestfulAPI {
 				mypromo.setTimeEnd(promotion.getTimeEnd());
 				mypromo.setDescription(promotion.getDescription());
 				return promotionRepository.save(mypromo);
-			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));	
+			}).orElseThrow(() -> new Exception("promotion " + id + " not found"));
 		}
 	}
 
 	@PostMapping("/deletepromo")
-		void deletepromote(@RequestBody Promotion promotion) {
+	void deletepromote(@RequestBody Promotion promotion) {
 		Integer id = promotion.getId();
 		promotionRepository.deleteById(id);
 	}
 
 	// API BLOG //
-	
+
 	// API ACCOUNT //
 	@PostMapping("/listaccount")
 	List<Admins> listaccount() {
@@ -274,35 +284,82 @@ public class RestfulAPI {
 	}
 
 	@PostMapping("/newaccount")
-	Admins newaccount(@RequestBody Admins admins) {			
+	Admins newaccount(@RequestBody Admins admins) {
 		return adminRepository.save(admins);
 	}
 
 	@PostMapping("/editaccount")
 	Admins editaccount(@RequestBody Admins admins) throws Exception {
 		Integer id = admins.getId();
-			
-			return adminRepository.findById(id).<Admins>map(myadmin -> {
-				myadmin.setName(admins.getName());
-				myadmin.setPassword(admins.getPassword());					
-				return adminRepository.save(myadmin);
-			}).orElseThrow(() -> new Exception("Account " + id + " not found"));						
+
+		return adminRepository.findById(id).<Admins>map(myadmin -> {
+			myadmin.setName(admins.getName());
+			myadmin.setPassword(admins.getPassword());
+			return adminRepository.save(myadmin);
+		}).orElseThrow(() -> new Exception("Account " + id + " not found"));
 	}
 
 	@PostMapping("/deleteaccount")
 	void deleteaccount(@RequestBody Admins admins) {
 		Integer id = admins.getId();
 		adminRepository.deleteById(id);
-	}	
+	}
 	// API ACCOUNT //
-	
+
 	// API CART //
+	// API CART //
+	@PostMapping("cartSession")
+	public List<Item> cartItem(HttpSession session) {
+		List<Item> cart = (List<Item>) session.getAttribute("item");
+		return cart;
+	}
+
+	@PostMapping("buy")
+	public List<Item> buy(@RequestBody Item item, HttpSession session) {
+		Product product = productRepository.getbyId(item.getProduct().getId());
+		if (session.getAttribute("item") == null) {
+			List<Item> cart = new ArrayList<Item>();
+			cart.add(new Item(product, item.getQuantity()));
+			session.setAttribute("item", cart);
+			return cart;
+		} else {
+			List<Item> cart = (List<Item>) session.getAttribute("item");
+			int index = this.exists(item.getProduct().getId(), cart);
+			if (index == -1) {
+				cart.add(new Item(product, item.getQuantity()));
+			} else {
+				int quantity = cart.get(index).getQuantity() + item.getQuantity();
+				cart.get(index).setQuantity(quantity);
+			}
+			session.setAttribute("item", cart);
+			return cart;
+		}
+	}
+
+	@PostMapping("remove/{id}")
+	public List<Item> remove(@PathVariable("id") Integer id, HttpSession session) {
+		List<Item> cart = (List<Item>) session.getAttribute("item");
+		int index = this.exists(id, cart);
+		cart.remove(index);
+		session.setAttribute("item", cart);
+		return cart;
+	}
+
+	private int exists(Integer id, List<Item> cart) {
+		for (int i = 0; i < cart.size(); i++) {
+			if (cart.get(i).getProduct().getId() == id) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 //	@PostMapping("/cart")
 //	List<CartDTO> cart() {
 //		return (List<CartDTO>) cartRepository.innerjoin();
 //	}
 	// API CART //
-	
+
 	// API ORDER //
 	@PostMapping("/listorder")
 	List<OrderDetails> listorder() {
