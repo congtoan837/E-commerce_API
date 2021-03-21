@@ -310,8 +310,7 @@ public class RestfulAPI {
 	// API CART //
 	@PostMapping("cartSession")
 	public List<Item> cartItem(HttpSession session) {
-		List<Item> cart = (List<Item>) session.getAttribute("item");
-		return cart;
+		return (List<Item>) session.getAttribute("item");
 	}
 
 	@PostMapping("buy")
