@@ -20,11 +20,27 @@ public class Cart implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
 	@Column(name = "CustomerId")
-	private int Customer_Id;
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "Cart_Item",
-			joinColumns = @JoinColumn(name = "Cart_Id"),
-			inverseJoinColumns = @JoinColumn(name = "Product_Id")
-	)
-	private Collection<Product> product;
+	private int CustomerId;
+
+	public Cart() {
+	}
+
+	public Cart(Integer id, int customerId) {
+		Id = id;
+		CustomerId = customerId;
+	}
+
+	public Integer getId() {
+		return Id;
+	}
+	public void setId(Integer id) {
+		Id = id;
+	}
+
+	public int getCustomerId() {
+		return CustomerId;
+	}
+	public void setCustomerId(int customerId) {
+		CustomerId = customerId;
+	}
 }

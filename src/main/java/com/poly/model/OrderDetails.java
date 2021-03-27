@@ -38,7 +38,7 @@ public class OrderDetails implements Serializable {
 		super();
 	}
 	public OrderDetails(int id, int quantity, int totalPrice, int productId, String promotion,
-			int customerId, String status, int paymentId, String createTime) {
+			int customerId, String status, int paymentId) {
 		super();
 		Id = id;
 		Quantity = quantity;
@@ -48,7 +48,6 @@ public class OrderDetails implements Serializable {
 		CustomerId = customerId;
 		Status = status;
 		PaymentId = paymentId;
-		CreateTime = createTime;
 	}
 	public int getId() {
 		return Id;

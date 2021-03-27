@@ -25,10 +25,7 @@ import com.poly.services.CustomerServiceImp;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		 securedEnabled = true,
-		 jsr250Enabled = true,
-		prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
@@ -71,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/signin*").permitAll()
 			.antMatchers("/api/listblog*").permitAll()
-			.antMatchers("/api/listproduct*").permitAll()
+			.antMatchers("/api/listproduct*").access("hasRole('ADMIN')")
 			.antMatchers("/api/buy*").permitAll()
 			.antMatchers("/api/cartSession*").permitAll()
 			.antMatchers("/api/remove/**").permitAll()

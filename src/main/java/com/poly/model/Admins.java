@@ -2,6 +2,7 @@ package com.poly.model;
 
 import java.io.Serializable;
 
+import javax.management.relation.Role;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,16 +20,19 @@ public class Admins implements Serializable{
     private String Name;
 	@Column(name = "Password", length = 50)
     private String Password;
+	@Column(name = "Role", length = 50)
+	private String Role;
 	
 	public Admins() {
 		super();
 	}
 
-	public Admins(Integer id, String name, String password) {
+	public Admins(Integer id, String name, String password, String role) {
 		super();
 		Id = id;
 		Name = name;
 		Password = password;
+		Role = role;
 	}
 
 	public Integer getId() {
@@ -53,5 +57,13 @@ public class Admins implements Serializable{
 
 	public void setPassword(String password) {
 		Password = password;
+	}
+
+	public String getRole() {
+		return Role;
+	}
+
+	public void setRole(String role) {
+		Role = role;
 	}
 }

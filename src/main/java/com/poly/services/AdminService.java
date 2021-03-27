@@ -1,6 +1,6 @@
 package com.poly.services;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -20,8 +20,9 @@ public class AdminService implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ADMIN");
-		return Arrays.asList(authority);
+		ArrayList<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+		list.add(new SimpleGrantedAuthority(admins.getRole()));
+		return list;
 	}
 
 	@Override

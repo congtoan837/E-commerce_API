@@ -1,6 +1,6 @@
 package com.poly.model;
 
-public class Item {
+public class SessionItem {
 
 	private Product product;
 	private int quantity;
@@ -21,10 +21,10 @@ public class Item {
 		this.quantity = quantity;
 	}
 
-	public Item() {
+	public SessionItem() {
 	}
 
-	public Item(Product product, int quantity) {
+	public SessionItem(Product product, int quantity) {
 		this.product = product;
 		this.quantity = quantity;
 	}

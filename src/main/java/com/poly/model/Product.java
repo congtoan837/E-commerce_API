@@ -33,8 +33,6 @@ public class Product implements Serializable {
 	private int Quantity;
 	@Column(name = "Category", length = 50)
 	private Integer Category;
-	@ManyToMany(mappedBy = "product")
-	private Collection<Cart> cart;
 	
 	public Product() {
 		super();
