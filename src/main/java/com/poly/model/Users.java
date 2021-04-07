@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Customer")
-public class Customer implements Serializable{
+@Table(name = "Users")
+public class Users implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
@@ -29,15 +29,17 @@ public class Customer implements Serializable{
     private String Image;
 	@Column(name = "Status")
     private String Status;
+	@Column(name = "Username")
+	private String Username;
+	@Column(name = "Role")
+	private String Role;
 	
 	
-	public Customer() {
+	public Users() {
 		super();
 	}
 
-	public Customer(Integer id, String name, String email, String phone, String address, String password, String image,
-			String status) {
-		super();
+	public Users(Integer id, String name, String email, String phone, String address, String password, String image, String status, String username, String role) {
 		Id = id;
 		Name = name;
 		Email = email;
@@ -46,12 +48,13 @@ public class Customer implements Serializable{
 		Password = password;
 		Image = image;
 		Status = status;
+		Username = username;
+		Role = role;
 	}
-	
+
 	public Integer getId() {
 		return Id;
 	}
-
 	public void setId(Integer id) {
 		Id = id;
 	}
@@ -59,15 +62,12 @@ public class Customer implements Serializable{
 	public String getName() {
 		return Name;
 	}
-
 	public void setName(String name) {
 		Name = name;
 	}
-
 	public String getEmail() {
 		return Email;
 	}
-
 	public void setEmail(String email) {
 		Email = email;
 	}
@@ -110,5 +110,21 @@ public class Customer implements Serializable{
 
 	public void setStatus(String status) {
 		Status = status;
+	}
+
+	public String getUsername() {
+		return Username;
+	}
+
+	public void setUsername(String username) {
+		Username = username;
+	}
+
+	public String getRole() {
+		return Role;
+	}
+
+	public void setRole(String role) {
+		Role = role;
 	}
 }

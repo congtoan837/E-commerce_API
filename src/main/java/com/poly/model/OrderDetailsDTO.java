@@ -1,107 +1,94 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "OrderDetails")
-public class OrderDetails implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderDetailsDTO implements Serializable {
 	private int Id;
-	@Column(name = "Quantity")
+	private Product product;
 	private int Quantity;
-	@Column(name = "TotalPrice")
 	private int TotalPrice;
-	@Column(name = "ProductId")
-	private int ProductId;
-	@Column(name = "Promotion")
 	private String Promotion;
-	@Column(name = "OrderId")
-	private int OrderId;
-	@Column(name = "Status")
 	private String Status;
-	@Column(name = "PaymentId")
 	private int PaymentId;
-	@Column(name = "CreateTime")
 	private String CreateTime;
 
-	
-	
-	public OrderDetails() {
-		super();
+	public OrderDetailsDTO() {
 	}
-	public OrderDetails(int id, int quantity, int totalPrice, int productId, String promotion,
-			int orderId, String status,int paymentId) {
-		super();
+
+	public OrderDetailsDTO(int id, Product product, int quantity, int totalPrice, String promotion, String status, int paymentId, String createTime) {
 		Id = id;
+		this.product = product;
 		Quantity = quantity;
 		TotalPrice = totalPrice;
-		ProductId = productId;
 		Promotion = promotion;
-		OrderId = orderId;
 		Status = status;
 		PaymentId = paymentId;
-	}
-	public int getId() {
-		return Id;
-	}
-	public void setId(int id) {
-		Id = id;
-	}
-	public int getQuantity() {
-		return Quantity;
-	}
-	public void setQuantity(int quantity) {
-		Quantity = quantity;
-	}
-	public int getTotalPrice() {
-		return TotalPrice;
-	}
-	public void setTotalPrice(int totalPrice) {
-		TotalPrice = totalPrice;
-	}
-	public int getProductId() {
-		return ProductId;
-	}
-	public void setProductId(int productId) {
-		ProductId = productId;
-	}
-	public String getPromotion() {
-		return Promotion;
-	}
-	public void setPromotion(String promotion) {
-		Promotion = promotion;
-	}
-	public int getOrderId() {
-		return OrderId;
-	}
-	public void setOrderId(int orderId) {
-		OrderId = orderId;
-	}
-	public String getStatus() {
-		return Status;
-	}
-	public void setStatus(String status) {
-		Status = status;
-	}
-	public int getPaymentId() {
-		return PaymentId;
-	}
-	public void setPaymentId(int paymentId) {
-		PaymentId = paymentId;
-	}
-	public String getCreateTime() {
-		return CreateTime;
-	}
-	public void setCreateTime(String createTime) {
 		CreateTime = createTime;
 	}
 
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public int getQuantity() {
+		return Quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		Quantity = quantity;
+	}
+
+	public int getTotalPrice() {
+		return TotalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		TotalPrice = totalPrice;
+	}
+
+	public String getPromotion() {
+		return Promotion;
+	}
+
+	public void setPromotion(String promotion) {
+		Promotion = promotion;
+	}
+
+	public String getStatus() {
+		return Status;
+	}
+
+	public void setStatus(String status) {
+		Status = status;
+	}
+
+	public int getPaymentId() {
+		return PaymentId;
+	}
+
+	public void setPaymentId(int paymentId) {
+		PaymentId = paymentId;
+	}
+
+	public String getCreateTime() {
+		return CreateTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		CreateTime = createTime;
+	}
 }
+

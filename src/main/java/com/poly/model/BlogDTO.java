@@ -4,18 +4,18 @@ import java.io.Serializable;
 
 public class BlogDTO implements Serializable{
 	private Integer Id;
-	private Integer IdAmin;
+	private Integer IdUser;
 	private String Name;
     private String Title;
     private String Image;
     private String Content;
     private String Description;   
     
-	public BlogDTO(Integer id, Integer idAmin, String name, String title, String image,
+	public BlogDTO(Integer id, Integer idUser, String name, String title, String image,
 			String content, String description) {
 		super();
 		Id = id;
-		IdAmin = idAmin;
+		IdUser = idUser;
 		Name = name;
 		Title = title;
 		Image = image;
@@ -60,10 +60,10 @@ public class BlogDTO implements Serializable{
 		Description = description;
 	}
 	public Integer getIdAmin() {
-		return IdAmin;
+		return IdUser;
 	}
-	public void setIdAmin(Integer idAmin) {
-		IdAmin = idAmin;
+	public void setIdAmin(Integer idUser) {
+		IdUser = idUser;
 	}
     
 }

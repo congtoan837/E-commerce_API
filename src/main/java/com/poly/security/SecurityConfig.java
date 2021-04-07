@@ -15,13 +15,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.poly.services.AdminServiceImp;
-import com.poly.services.CustomerServiceImp;
+import com.poly.services.UserServiceImp;
 
 @Configuration
 @EnableWebSecurity
@@ -29,9 +27,8 @@ import com.poly.services.CustomerServiceImp;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	AdminServiceImp adminServiceImp;
-	@Autowired
-	CustomerServiceImp customerServiceImp;
+	UserServiceImp userServiceImp;
+
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
 	
@@ -48,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
-        auth.userDetailsService(adminServiceImp)
+        auth.userDetailsService(userServiceImp)
             .passwordEncoder(new MyPasswordEncoder());
     }	
     
@@ -68,10 +65,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/signin*").permitAll()
 			.antMatchers("/api/listblog*").permitAll()
-			.antMatchers("/api/listproduct*").access("hasRole('ADMIN')")
+			.antMatchers("/api/listbrand*").permitAll()
+			.antMatchers("/api/listcategory*").permitAll()
+			.antMatchers("/api/listproduct*").permitAll()
+			.antMatchers("/api/findproduct*").permitAll()
+			.antMatchers("/api/listpromo*").permitAll()
 			.antMatchers("/api/buy*").permitAll()
 			.antMatchers("/api/cartSession*").permitAll()
 			.antMatchers("/api/remove/**").permitAll()
+			.antMatchers("/api/**").access("hasAuthority('ADMIN')")
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()

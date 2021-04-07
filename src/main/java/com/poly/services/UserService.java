@@ -7,32 +7,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.poly.model.Admins;
+import com.poly.model.Users;
 
-public class AdminService implements UserDetails {
+public class UserService implements UserDetails {
 	
-	private Admins admins;		
+	private Users users;
 	
-	public AdminService(Admins admins) {
+	public UserService(Users user) {
 		super();
-		this.admins = admins;
+		this.users = user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		ArrayList<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-		list.add(new SimpleGrantedAuthority(admins.getRole()));
+		list.add(new SimpleGrantedAuthority(users.getRole()));
 		return list;
+	}
+
+	public Integer getId() {
+		return users.getId();
 	}
 
 	@Override
 	public String getPassword() {
-		return admins.getPassword();
+		return users.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return admins.getName();
+		return users.getUsername();
 	}
 
 	@Override

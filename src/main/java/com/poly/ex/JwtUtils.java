@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.poly.services.AdminService;
+import com.poly.services.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,7 +33,7 @@ public class JwtUtils {
 
 	public String generateJwtToken(Authentication authentication) {
 
-		AdminService userPrincipal = (AdminService) authentication.getPrincipal();
+		UserService userPrincipal = (UserService) authentication.getPrincipal();
 
 		return Jwts.builder()
 				.setSubject((userPrincipal.getUsername()))
@@ -43,10 +43,10 @@ public class JwtUtils {
 				.compact();
 	}
 
-	public static AdminService getPrincipal() {
+	public static UserService getPrincipal() {
 		if (SecurityContextHolder.getContext() != null &&
 				SecurityContextHolder.getContext().getAuthentication() != null) {
-			return (AdminService) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
+			return (UserService) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
 		}
 		return null;
 	}
@@ -75,7 +75,7 @@ public class JwtUtils {
 	}
 
 	public static String getLoggedInUsername() {
-		AdminService principal = getPrincipal();
+		UserService principal = getPrincipal();
 		if (principal != null) {
 			return principal.getUsername();
 		}

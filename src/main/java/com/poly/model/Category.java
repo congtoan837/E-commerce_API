@@ -1,5 +1,7 @@
 package com.poly.model;
 
+import com.sun.istack.NotNull;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ public class Category implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
+	@NotNull
 	@Column(name = "Name", length = 50)
     private String Name;
 	

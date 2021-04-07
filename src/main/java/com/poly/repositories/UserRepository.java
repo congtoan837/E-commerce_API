@@ -5,11 +5,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.poly.model.Customer;
+import com.poly.model.Users;
 
 @Repository
-public interface CustomerRepository extends CrudRepository<Customer, Integer> {
+public interface UserRepository extends CrudRepository<Users, Integer> {
 	
-	@Query("SELECT c FROM Customer c WHERE c.Phone = :username" )
-	public Customer getByPhone(@Param("username") String username);
+	@Query("SELECT u FROM Users u WHERE u.Username = :username")
+	public Users getByUser(@Param("username") String username);
 }
