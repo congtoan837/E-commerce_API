@@ -8,23 +8,16 @@ public class OrderDetailsDTO implements Serializable {
 	private Product product;
 	private int Quantity;
 	private int TotalPrice;
-	private String Promotion;
-	private String Status;
-	private int PaymentId;
 	private String CreateTime;
 
 	public OrderDetailsDTO() {
 	}
 
-	public OrderDetailsDTO(int id, Product product, int quantity, int totalPrice, String promotion, String status, int paymentId, String createTime) {
+	public OrderDetailsDTO(int id, Product product, int quantity, int totalPrice) {
 		Id = id;
 		this.product = product;
 		Quantity = quantity;
 		TotalPrice = totalPrice;
-		Promotion = promotion;
-		Status = status;
-		PaymentId = paymentId;
-		CreateTime = createTime;
 	}
 
 	public int getId() {
@@ -47,10 +40,6 @@ public class OrderDetailsDTO implements Serializable {
 		return Quantity;
 	}
 
-	public void setQuantity(int quantity) {
-		Quantity = quantity;
-	}
-
 	public int getTotalPrice() {
 		return TotalPrice;
 	}
@@ -59,28 +48,8 @@ public class OrderDetailsDTO implements Serializable {
 		TotalPrice = totalPrice;
 	}
 
-	public String getPromotion() {
-		return Promotion;
-	}
-
-	public void setPromotion(String promotion) {
-		Promotion = promotion;
-	}
-
-	public String getStatus() {
-		return Status;
-	}
-
-	public void setStatus(String status) {
-		Status = status;
-	}
-
-	public int getPaymentId() {
-		return PaymentId;
-	}
-
-	public void setPaymentId(int paymentId) {
-		PaymentId = paymentId;
+	public void setQuantity(int quantity) {
+		Quantity = quantity;
 	}
 
 	public String getCreateTime() {

@@ -14,34 +14,42 @@ import javax.persistence.Table;
 public class Payment implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int PaymentId;
-	@Column(name = "PaymentName", length = 50)
-	private String PaymentName;
-	@Column(name = "PayDescription", length = 50)
-	private String PayDescription;
+	private int Id;
+	@Column(name = "Name", length = 50)
+	private String Name;
+	@Column(name = "Description", length = 50)
+	private String Description;
 
-	public int getPaymentId() {
-		return PaymentId;
+	public Payment() {
 	}
 
-	public void setPaymentId(int paymentId) {
-		PaymentId = paymentId;
+	public Payment(int id, String name, String description) {
+		Id = id;
+		Name = name;
+		Description = description;
 	}
 
-	public String getPaymentName() {
-		return PaymentName;
+	public int getId() {
+		return Id;
 	}
 
-	public void setPaymentName(String paymentName) {
-		PaymentName = paymentName;
+	public void setId(int id) {
+		Id = id;
 	}
 
-	public String getPayDescription() {
-		return PayDescription;
+	public String getName() {
+		return Name;
 	}
 
-	public void setPayDescription(String payDescription) {
-		PayDescription = payDescription;
+	public void setName(String name) {
+		Name = name;
 	}
 
+	public String getDescription() {
+		return Description;
+	}
+
+	public void setDescription(String description) {
+		Description = description;
+	}
 }

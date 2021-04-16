@@ -39,6 +39,18 @@ public class UserService implements UserDetails {
 		return users.getUsername();
 	}
 
+	public String getname() {
+		return users.getName();
+	}
+
+	public String getPhone() {
+		return users.getPhone();
+	}
+
+	public String getAddress() {
+		return users.getAddress();
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;

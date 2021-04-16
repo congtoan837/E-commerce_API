@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.criteria.Order;
 import javax.servlet.http.HttpSession;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import com.poly.model.*;
@@ -29,11 +32,15 @@ public class RestfulAPI {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     // API CUSTOMER //
     @PostMapping("/listcustomer")
@@ -43,7 +50,7 @@ public class RestfulAPI {
 
     @PostMapping("/newcustomer")
     Users newProduct(@RequestBody Users user) {
-        return user;
+        return userRepository.save(user);
     }
 
     @PostMapping("/findcustomer")
@@ -272,6 +279,11 @@ public class RestfulAPI {
         }
     }
 
+    @PostMapping("/findpromo")
+    Promotion findpromo(@RequestBody Promotion promotion) {
+        return promotionRepository.getByCoupon(promotion.getCoupon());
+    }
+
     @PostMapping("/deletepromo")
     void deletepromote(@RequestBody Promotion promotion) {
         Integer id = promotion.getId();
@@ -329,7 +341,7 @@ public class RestfulAPI {
     @PostMapping("/newcart")
     Cart findcart(@RequestBody Cart cart) {
         Cart c = cartRepository.getCartByCustomerId(cart.getCustomerId());
-        if(c == null){
+        if (c == null) {
             cartRepository.save(cart);
         }
         return cartRepository.getCartByCustomerId(cart.getCustomerId());
@@ -341,11 +353,11 @@ public class RestfulAPI {
     Object newitem(@RequestBody CartItem cartItem) throws Exception {
         if (cartItem.getQuantity() != 0) {
             Optional<CartItem> items = itemRepository.findByProductIdAndCartId(cartItem.getProductId(), cartItem.getCartId());
-            if(!items.isPresent()) {
+            if (!items.isPresent()) {
                 return itemRepository.save(cartItem);
             } else {
-                return itemRepository.findByProductIdAndCartId(cartItem.getProductId(), cartItem.getCartId()).<CartItem>map(a ->{
-                    a.setQuantity(a.getQuantity()+cartItem.getQuantity());
+                return itemRepository.findByProductIdAndCartId(cartItem.getProductId(), cartItem.getCartId()).<CartItem>map(a -> {
+                    a.setQuantity(a.getQuantity() + cartItem.getQuantity());
                     return itemRepository.save(a);
                 });
             }
@@ -364,18 +376,64 @@ public class RestfulAPI {
         itemRepository.deleteById(cartItem.getId());
         return "Delete Success";
     }
+
+    @PostMapping("/removeall")
+    String removeall(@RequestBody CartItem cartItem) {
+        itemRepository.deleteByCartId(cartItem.getCartId());
+        return "Delete Success";
+    }
     // API CART ITEM //
 
     // API ORDER //
+    @PostMapping("/listorderbyadmin")
+    List<OrderDTO> listorderbyadmin() {
+        return (List<OrderDTO>) orderRepository.getall();
+    }
+
     @PostMapping("/listorder")
+    List<Orders> listorder(@RequestBody Orders order) {
+        return (List<Orders>) orderRepository.getOrderByCustomerId(order.getCustomerId());
+    }
+
+    @PostMapping("/neworder")
+    Orders neworder(@RequestBody Orders orders) {
+        return orderRepository.save(orders);
+    }
+
+    @PostMapping("/deleteorder")
+    void deleteorder(@RequestBody Promotion promotion) {
+        orderRepository.deleteById(promotion.getId());
+    }
+    // API ORDER //
+
+    // API ORDER DETAIL//
+    @PostMapping("/listorderdetail")
     List<OrderDetailsDTO> listorder(@RequestBody OrderDetails orderDetails) {
         return (List<OrderDetailsDTO>) orderDetailRepository.getByOrderId(orderDetails.getOrderId());
     }
 
-    @PostMapping("/neworder")
-    List<OrderDetails> neworder() {
-        return (List<OrderDetails>) orderDetailRepository.findAll();
+    @PostMapping("/neworderdetail")
+    OrderDetails neworderdetail(@RequestBody OrderDetails orderDetails) {
+        return orderDetailRepository.save(orderDetails);
     }
-    // API ORDER //
+    // API ORDER DETAIL//
+
+    // API PAYMENT //
+    @PostMapping("/listpayment")
+    List<Payment> listpayment() {
+        return (List<Payment>) paymentRepository.findAll();
+    }
+    // API PAYMENT //
+
+    // API CHART //
+    @PostMapping("/count")
+    int count(@RequestBody Time time) {
+        try {
+            return orderRepository.countByTime(time.getTimeStart(), time.getTimeEnd(), time.getCategory());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
 }
+

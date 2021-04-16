@@ -15,40 +15,24 @@ public class OrderDetails implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int Id;
-	@Column(name = "Quantity")
-	private int Quantity;
-	@Column(name = "TotalPrice")
-	private int TotalPrice;
 	@Column(name = "ProductId")
 	private int ProductId;
-	@Column(name = "Promotion")
-	private String Promotion;
+	@Column(name = "Quantity")
+	private int Quantity;
 	@Column(name = "OrderId")
 	private int OrderId;
-	@Column(name = "Status")
-	private String Status;
-	@Column(name = "PaymentId")
-	private int PaymentId;
-	@Column(name = "CreateTime")
-	private String CreateTime;
-
-	
 	
 	public OrderDetails() {
-		super();
+
 	}
-	public OrderDetails(int id, int quantity, int totalPrice, int productId, String promotion,
-			int orderId, String status,int paymentId) {
-		super();
+
+	public OrderDetails(int id, int productId, int quantity, int orderId) {
 		Id = id;
-		Quantity = quantity;
-		TotalPrice = totalPrice;
 		ProductId = productId;
-		Promotion = promotion;
+		Quantity = quantity;
 		OrderId = orderId;
-		Status = status;
-		PaymentId = paymentId;
 	}
+
 	public int getId() {
 		return Id;
 	}
@@ -61,47 +45,15 @@ public class OrderDetails implements Serializable {
 	public void setQuantity(int quantity) {
 		Quantity = quantity;
 	}
-	public int getTotalPrice() {
-		return TotalPrice;
-	}
-	public void setTotalPrice(int totalPrice) {
-		TotalPrice = totalPrice;
-	}
 	public int getProductId() {
 		return ProductId;
 	}
-	public void setProductId(int productId) {
-		ProductId = productId;
-	}
-	public String getPromotion() {
-		return Promotion;
-	}
-	public void setPromotion(String promotion) {
-		Promotion = promotion;
-	}
+	public void setProductId(int productId) { ProductId = productId; }
 	public int getOrderId() {
 		return OrderId;
 	}
 	public void setOrderId(int orderId) {
 		OrderId = orderId;
-	}
-	public String getStatus() {
-		return Status;
-	}
-	public void setStatus(String status) {
-		Status = status;
-	}
-	public int getPaymentId() {
-		return PaymentId;
-	}
-	public void setPaymentId(int paymentId) {
-		PaymentId = paymentId;
-	}
-	public String getCreateTime() {
-		return CreateTime;
-	}
-	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.poly.controller;
 
 import com.poly.model.Cart;
+import com.poly.model.UserDTO;
 import com.poly.repositories.CartRepository;
 import org.jboss.logging.Logger;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import com.poly.model.JwtResponse;
 import com.poly.model.LoginRequest;
 import com.poly.services.UserService;
 
+import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,18 @@ public class AuthController {
         } catch (Exception e) {
             return getResponseEntity(null, "-1", "Login fail!", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value = "/username")
+    @ResponseBody
+    public Object currentUserName(Authentication authentication) {
+        UserService u = (UserService) authentication.getPrincipal();
+        UserDTO list = new UserDTO();
+        list.setUsername(u.getUsername());
+        list.setName(u.getname());
+        list.setAddress(u.getAddress());
+        list.setPhone(u.getPhone());
+        return list;
     }
 
     private ResponseEntity<?> getResponseEntity(Object data, String code, String mess, HttpStatus status) {
