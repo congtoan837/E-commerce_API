@@ -1,6 +1,5 @@
 package com.poly.repositories;
 
-import com.poly.model.CartDTO;
 import com.poly.model.CartItem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,20 +14,19 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends CrudRepository<CartItem, Integer> {
 
-    @Query("SELECT new com.poly.model.CartDTO(i.Id,p,i.Quantity) FROM Product p " +
-            "Inner join CartItem i on i.ProductId = p.Id WHERE i.CartId = :id")
-    public List<CartDTO> getByCartId(@Param("id") Integer id);
+    @Query("SELECT c FROM CartItem c WHERE c.cart.Id = :id")
+    public List<CartItem> getByCartId(@Param("id") Integer id);
 
-    @Query("SELECT p FROM CartItem p WHERE p.ProductId = :ProductId AND p.CartId = :CartId")
+    @Query("SELECT c FROM CartItem c WHERE c.product.Id = :ProductId AND c.cart.Id = :CartId")
     public Optional<CartItem> findByProductIdAndCartId(@Param("ProductId") Integer id, @Param("CartId") Integer CartId);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM CartItem p WHERE p.ProductId = :ProductId AND p.CartId = :CartId")
+    @Query("DELETE FROM CartItem c WHERE c.product.Id = :ProductId AND c.cart.Id = :CartId")
     void deleteByProductIdAndCartId(@Param("ProductId") Integer ProductId, @Param("CartId") Integer CartId);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM CartItem p WHERE p.CartId = :CartId")
+    @Query("DELETE FROM CartItem c WHERE c.cart.Id = :CartId")
     void deleteByCartId(@Param("CartId") Integer CartId);
 }

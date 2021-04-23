@@ -3,9 +3,8 @@ package com.poly.model;
 import com.sun.istack.NotNull;
 
 import java.io.Serializable;
-
 import javax.persistence.*;
-import javax.validation.Valid;
+import javax.validation.*;
 import javax.validation.constraints.NotBlank;
 
 @Valid
@@ -18,29 +17,25 @@ public class Blog implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
+
 	@Column(name = "Title")
     private String Title;
+
 	@Column(name = "Image")
     private String Image;
+
+	@NotBlank
 	@Column(name = "Content")
     private String Content;
+
 	@Column(name = "Description")
     private String Description;
-	@Column(name = "CreateBy")
-    private int CreateBy;
-	
-	public Blog() {
-		super();
-	}
 
-	public Blog(Integer id, String title, String image, String content, String description, int createBy) {
-		super();
-		Id = id;
-		Title = title;
-		Image = image;
-		Content = content;
-		Description = description;
-		CreateBy = createBy;
+	@ManyToOne
+	@JoinColumn(name = "CreateBy")
+	private Users user;
+
+	public Blog() {
 	}
 
 	public Integer getId() {
@@ -83,12 +78,12 @@ public class Blog implements Serializable{
 		Description = description;
 	}
 
-	public int getCreateBy() {
-		return CreateBy;
+	public Users getUser() {
+		return user;
 	}
 
-	public void setCreateBy(int createBy) {
-		CreateBy = createBy;
+	public void setUser(Users user) {
+		this.user = user;
 	}
 }
 

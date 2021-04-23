@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query("SELECT c FROM Cart c WHERE c.CustomerId = :id")
+    @Query("SELECT c FROM Cart c WHERE c.user.Id = :id")
     public Cart getCartByCustomerId(@Param("id") Integer id);
 
     @Query(value = "INSERT INTO Cart(Customer_Id) values (:id)", nativeQuery = true)

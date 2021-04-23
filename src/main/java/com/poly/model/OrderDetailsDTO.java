@@ -8,16 +8,18 @@ public class OrderDetailsDTO implements Serializable {
 	private Product product;
 	private int Quantity;
 	private int TotalPrice;
+	private String Brand;
 	private String CreateTime;
 
 	public OrderDetailsDTO() {
 	}
 
-	public OrderDetailsDTO(int id, Product product, int quantity, int totalPrice) {
+	public OrderDetailsDTO(int id, Product product, int quantity, int totalPrice, String brand) {
 		Id = id;
 		this.product = product;
 		Quantity = quantity;
 		TotalPrice = totalPrice;
+		Brand = brand;
 	}
 
 	public int getId() {
@@ -50,6 +52,14 @@ public class OrderDetailsDTO implements Serializable {
 
 	public void setQuantity(int quantity) {
 		Quantity = quantity;
+	}
+
+	public String getBrand() {
+		return Brand;
+	}
+
+	public void setBrand(String brand) {
+		Brand = brand;
 	}
 
 	public String getCreateTime() {

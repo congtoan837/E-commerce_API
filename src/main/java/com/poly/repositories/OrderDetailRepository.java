@@ -13,9 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface OrderDetailRepository extends CrudRepository<OrderDetails, Integer> {
-    @Query("SELECT new com.poly.model.OrderDetailsDTO(od.Id, p , od.Quantity, p.Price*od.Quantity) FROM OrderDetails od "
-            + "inner join Product p on od.ProductId = p.Id where od.OrderId = :id")
-    public List<OrderDetailsDTO> getByOrderId(@Param("id") Integer id);
+    @Query("SELECT od FROM OrderDetails od WHERE od.orders.Id = :id")
+    public List<OrderDetails> getByOrderId(@Param("id") Integer id);
 
 
 }

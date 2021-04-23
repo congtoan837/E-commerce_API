@@ -1,24 +1,28 @@
 package com.poly.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.criteria.Order;
 import javax.servlet.http.HttpSession;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.poly.model.*;
 import com.poly.repositories.*;
+import com.poly.services.*;
 
 @RestController
 //@CrossOrigin(origins = {"http://localhost:8080", "https://webdemodoan.herokuapp.com"})
 @RequestMapping("/api")
 public class RestfulAPI {
+    @Autowired
+    ResponseUtils responseUtils;
+
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -36,6 +40,8 @@ public class RestfulAPI {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
+    private OrderSesionRepository orderSesionRepository;
+    @Autowired
     private ItemRepository itemRepository;
     @Autowired
     private CartRepository cartRepository;
@@ -44,26 +50,58 @@ public class RestfulAPI {
 
     // API CUSTOMER //
     @PostMapping("/listcustomer")
-    List<Users> alluser() {
-        return (List<Users>) userRepository.findAll();
+    public ResponseEntity<?> getAlluser() {
+        try {
+            List<Users> usersList = (List<Users>) userRepository.findAll();
+            return responseUtils.getResponseEntity(usersList, "1", "Get user success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get user fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newcustomer")
-    Users newProduct(@RequestBody Users user) {
-        return userRepository.save(user);
+    public ResponseEntity<?> newProduct(@RequestBody Users user) {
+        if (user.getName() == "" || user.getUsername() == "" || user.getPassword() == "" || user.getStatus() == "" || user.getPhone() == "") {
+            return responseUtils.getResponseEntity(null, "-1", "Create user fail!", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (userRepository.getByUser(user.getUsername()) != null) {
+                return responseUtils.getResponseEntity(null, "-1", "Username is already exists!", HttpStatus.BAD_REQUEST);
+            }
+            if (user.getPassword().length() < 6) {
+                return responseUtils.getResponseEntity(null, "-1", "Password must be at 11 digit!", HttpStatus.BAD_REQUEST);
+            }
+            if (user.getPhone().length() < 11) {
+                return responseUtils.getResponseEntity(null, "-1", "Number phone must be at least 6 characters!", HttpStatus.BAD_REQUEST);
+            } else {
+                Users usersList = userRepository.save(user);
+                return responseUtils.getResponseEntity(usersList, "1", "Get user success!", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get user fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/findcustomer")
-    Users one(@RequestBody Users user) throws Exception {
-        Integer id = user.getId();
-        return userRepository.findById(id).orElseThrow(() -> new Exception("User " + id + " not found"));
+    public ResponseEntity<?> one(@RequestBody Users user) throws Exception {
+        try {
+            Integer id = user.getId();
+            Optional<Users> usersList = userRepository.findById(id);
+            if (usersList.get() != null) {
+                return responseUtils.getResponseEntity(usersList, "1", "Get user success!", HttpStatus.OK);
+            } else {
+                return responseUtils.getResponseEntity(null, "-1", "Get user fail!", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get user fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/editcustomer")
-    Users replaceCustomer(@RequestBody Users user) throws Exception {
-        Integer id = user.getId();
-        if (user.getImage() == ("")) {
-            return userRepository.findById(id).<Users>map(myuser -> {
+    public ResponseEntity<?> replaceCustomer(@RequestBody Users user) {
+        try {
+            Integer id = user.getId();
+            Optional<Users> usersList = userRepository.findById(id).<Users>map(myuser -> {
                 myuser.setName(user.getName());
                 myuser.setEmail(user.getEmail());
                 myuser.setPhone(user.getPhone());
@@ -72,53 +110,88 @@ public class RestfulAPI {
                 myuser.setStatus(user.getStatus());
                 myuser.setUsername(user.getUsername());
                 myuser.setRole(user.getRole());
+                if (user.getImage() != "") {
+                    myuser.setImage(user.getImage());
+                }
                 return userRepository.save(myuser);
-            }).orElseThrow(() -> new Exception("User " + id + " not found"));
-        } else {
-            return userRepository.findById(id).<Users>map(myuser -> {
-                myuser.setImage(user.getImage());
-                myuser.setName(user.getName());
-                myuser.setEmail(user.getEmail());
-                myuser.setPhone(user.getPhone());
-                myuser.setPassword(user.getPassword());
-                myuser.setAddress(user.getAddress());
-                myuser.setStatus(user.getStatus());
-                myuser.setUsername(user.getUsername());
-                myuser.setRole(user.getRole());
-                return userRepository.save(myuser);
-            }).orElseThrow(() -> new Exception("User " + id + " not found"));
+            });
+            if (usersList.get() == null) {
+                return responseUtils.getResponseEntity(null, "-1", "Update user fail!", HttpStatus.BAD_REQUEST);
+            }
+            return responseUtils.getResponseEntity(usersList, "1", "Update user success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Update user fail!", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/deletecustomer")
-    void deleteCustomer(@RequestBody Users user) {
-        Integer id = user.getId();
-        userRepository.deleteById(id);
+    public ResponseEntity<?> deleteCustomer(@RequestBody Users user) {
+        try {
+            Integer id = user.getId();
+            userRepository.deleteById(id);
+            return responseUtils.getResponseEntity(user, "1", "Delete user success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Delete user fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API CUSTOMER //
 
     // API PRODUCT //
     @PostMapping("/listproduct")
-    List<ProductDTO> allproduct() {
-        return (List<ProductDTO>) productRepository.innerjoin();
+    public ResponseEntity<?> allproduct() {
+        try {
+            List<Product> productList = (List<Product>) productRepository.findAll();
+            return responseUtils.getResponseEntity(productList, "1", "Get all product success!", HttpStatus.OK);
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get all product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newproduct")
-    Product newProduct(@RequestBody Product newProduct) {
-        return productRepository.save(newProduct);
+    public ResponseEntity<?> newProduct(@RequestBody Product product) {
+        try {
+            if (product.getPrice() < 100000) {
+                return responseUtils.getResponseEntity(null, "-1", "Price must be greater than 100000 cost!", HttpStatus.BAD_REQUEST);
+            }
+            if (brandRepository.findById(product.getBrand().getId()) == null) {
+                return responseUtils.getResponseEntity(null, "-1", "Brand is not exists!", HttpStatus.BAD_REQUEST);
+            }
+            if (categoryRepository.findById(product.getCategory().getId()) == null) {
+                return responseUtils.getResponseEntity(null, "-1", "Category is not exists!", HttpStatus.BAD_REQUEST);
+            }
+            if (product.getStatus() == "") {
+                return responseUtils.getResponseEntity(null, "-1", "Status cannot null!", HttpStatus.BAD_REQUEST);
+            }
+            if (product.getQuantity() < 0) {
+                return responseUtils.getResponseEntity(null, "-1", "Quantity Password must be greater than 0 !", HttpStatus.BAD_REQUEST);
+            } else {
+                Product productList = productRepository.save(product);
+                return responseUtils.getResponseEntity(productList, "1", "Create product success!", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Create product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/findproduct")
-    Product one(@RequestBody Product newProduct) throws Exception {
-        Integer id = newProduct.getId();
-        return productRepository.findById(id).orElseThrow(() -> new Exception("Product " + id + " not found"));
+    @GetMapping("/findproduct")
+    public ResponseEntity<?> one(@RequestParam(value = "id",defaultValue = "") Integer id) {
+        try {
+            Optional<Product> productList = productRepository.findById(id);
+            if (productList.get() != null) {
+                return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
+            } else {
+                return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/editproduct")
-    Product replaceEmployee(@RequestBody Product newProduct) throws Exception {
-        Integer id = newProduct.getId();
-        if (newProduct.getImage() == ("")) {
-            return productRepository.findById(id).map(product -> {
+    public ResponseEntity<?> replaceEmployee(@RequestBody Product newProduct) {
+        try {
+            Integer id = newProduct.getId();
+            Optional<Object> productList = productRepository.findById(id).map(product -> {
                 product.setName(newProduct.getName());
                 product.setPrice(newProduct.getPrice());
                 product.setDescription(newProduct.getDescription());
@@ -126,32 +199,50 @@ public class RestfulAPI {
                 product.setBrand(newProduct.getBrand());
                 product.setQuantity(newProduct.getQuantity());
                 product.setCategory(newProduct.getCategory());
+                if (product.getImage() == "") {
+                    product.setImage(newProduct.getImage());
+                }
                 return productRepository.save(product);
-            }).orElseThrow(() -> new Exception("Product " + id + " not found"));
-        } else {
-            return productRepository.findById(id).map(product -> {
-                product.setName(newProduct.getName());
-                product.setPrice(newProduct.getPrice());
-                product.setImage(newProduct.getImage());
-                product.setDescription(newProduct.getDescription());
-                product.setStatus(newProduct.getStatus());
-                product.setBrand(newProduct.getBrand());
-                product.setQuantity(newProduct.getQuantity());
-                product.setCategory(newProduct.getCategory());
-                return productRepository.save(product);
-            }).orElseThrow(() -> new Exception("Product " + id + " not found"));
+            });
+            if (productList.get() != null) {
+                return responseUtils.getResponseEntity(productList, "1", "Update product success!", HttpStatus.OK);
+            }else {
+                return responseUtils.getResponseEntity(null, "-1", "Update product fail!", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Update product fail!", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/deleteproduct")
-    void deleteProduct(@RequestBody Product product) {
-        Integer id = product.getId();
-        productRepository.deleteById(id);
+    public ResponseEntity<?> deleteProduct(@RequestBody Product product) {
+        try {
+            Integer id = product.getId();
+            productRepository.deleteById(id);
+            return responseUtils.getResponseEntity(product, "1", "Delete product success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Delete product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/ProductByBrand/{id}")
-    List<Product> ProductByBrand(@PathVariable("id") Integer id) {
-        return (List<Product>) productRepository.findProductByBrand(id);
+    @GetMapping("/ProductByBrand")
+    public ResponseEntity<?> ProductByBrand(@RequestParam(value = "id",defaultValue = "") Integer id) {
+//        try {
+            List<Product> productList = productRepository.getByBrand(id);
+            return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
+//        }catch (Exception e){
+//            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+//        }
+    }
+
+    @GetMapping("/ProductByCategory")
+    public ResponseEntity<?> ProductByCategory(@RequestParam(value = "id",defaultValue = "") Integer id) {
+        try {
+            List<Product> productList = productRepository.getByCategory(id);
+            return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/countProductByBrand/{id}")
@@ -163,119 +254,180 @@ public class RestfulAPI {
 
     // API BRAND //
     @PostMapping("/listbrand")
-    List<Brand> listbrand() {
-        return (List<Brand>) brandRepository.findAll();
+    public ResponseEntity<?> listbrand() {
+        try {
+            List<Brand> brandList = (List<Brand>) brandRepository.findAll();
+            return responseUtils.getResponseEntity(brandList, "1", "Get all brand success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get brand fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newbrand")
-    Brand newBrand(@RequestBody Brand brand) {
-        return brandRepository.save(brand);
+    public ResponseEntity<?> newBrand(@RequestBody Brand brand) {
+        try {
+            Brand brandList = brandRepository.save(brand);
+            return responseUtils.getResponseEntity(brandList, "1", "Create brand success!", HttpStatus.OK);
+        }catch (Exception E){
+            return responseUtils.getResponseEntity(null, "-1", "Create brand fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/deletebrand")
-    void deleteBrand(@RequestBody Brand brand) {
-        brandRepository.deleteById(brand.getId());
+    public ResponseEntity<?> deleteBrand(@RequestBody Brand brand) {
+        try {
+            brandRepository.deleteById(brand.getId());
+            return responseUtils.getResponseEntity(brand, "1", "Delete brand success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Delete brand fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API BRAND //
 
     // API CATEGORY //
     @PostMapping("/listcategory")
-    List<Category> listcategory() {
-        return (List<Category>) categoryRepository.findAll();
+    public ResponseEntity<?> listcategory() {
+        try {
+            List<Category> categoryList = (List<Category>) categoryRepository.findAll();
+            return responseUtils.getResponseEntity(categoryList, "1", "Get all category success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get category fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newcategory")
-    Category newCategory(@RequestBody Category newCategory) {
-        return categoryRepository.save(newCategory);
+    public ResponseEntity<?> newCategory(@RequestBody Category newCategory) {
+        try {
+            Category categoryList = categoryRepository.save(newCategory);
+            return responseUtils.getResponseEntity(categoryList, "1", "Create category success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Create category fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/deletecategory")
-    void deleteCategory(@RequestBody Category newCategory) {
-        categoryRepository.deleteById(newCategory.getId());
+    public ResponseEntity<?> deleteCategory(@RequestBody Category newCategory) {
+        try {
+            categoryRepository.deleteById(newCategory.getId());
+            return responseUtils.getResponseEntity(newCategory, "1", "Create category success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Detele category fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API CATEGORY //
 
     // API BLOG //
     @PostMapping("/listblog")
-    List<BlogDTO> listblog() {
-        return (List<BlogDTO>) blogRepository.innerjoin();
+    public ResponseEntity<?> listblog() {
+        try {
+            List<Blog> blogList = (List<Blog>) blogRepository.findAll();
+            return responseUtils.getResponseEntity(blogList, "1", "Get all blog success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get all blog fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newblog")
-    Blog newblog(@RequestBody Blog blog) {
-        return blogRepository.save(blog);
+    public ResponseEntity<?> newblog(@RequestBody Blog blog) {
+        try {
+            List<Blog> blogList = (List<Blog>) blogRepository.save(blog);
+            return responseUtils.getResponseEntity(blogList, "1", "Create blog success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Create blog fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/findblog")
-    Blog one(@RequestBody Blog blog) throws Exception {
-        Integer id = blog.getId();
-        return blogRepository.findById(id).orElseThrow(() -> new Exception("Product " + id + " not found"));
+    public ResponseEntity<?> one(@RequestBody Blog blog) {
+        try {
+            Integer id = blog.getId();
+            Optional<Blog> blogList = blogRepository.findById(id);
+            return responseUtils.getResponseEntity(blogList, "1", "Create blog success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get blog fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/editblog")
-    Blog replaceBlog(@RequestBody Blog blog) throws Exception {
-        Integer id = blog.getId();
-        if (blog.getImage() == ("")) {
-            return blogRepository.findById(id).<Blog>map(myblog -> {
-                myblog.setTitle(blog.getTitle());
-                myblog.setDescription(blog.getDescription());
-                myblog.setContent(blog.getContent());
-                myblog.setCreateBy(blog.getCreateBy());
-                return blogRepository.save(myblog);
-            }).orElseThrow(() -> new Exception("Blog " + blog.getTitle() + " not found"));
-        } else {
-            return blogRepository.findById(id).<Blog>map(myblog -> {
-                myblog.setTitle(blog.getTitle());
-                myblog.setImage(blog.getImage());
-                myblog.setDescription(blog.getDescription());
-                myblog.setContent(blog.getContent());
-                myblog.setCreateBy(blog.getCreateBy());
-                return blogRepository.save(myblog);
-            }).orElseThrow(() -> new Exception("Blog " + id + " not found"));
+    public ResponseEntity<?> replaceBlog(@RequestBody Blog blog) {
+        try {
+            Integer id = blog.getId();
+            Optional<Blog> blogList = blogRepository.findById(id).<Blog>map(myblog -> {
+                    myblog.setTitle(blog.getTitle());
+                    myblog.setDescription(blog.getDescription());
+                    myblog.setContent(blog.getContent());
+                    myblog.setUser(blog.getUser());
+                    if(blog.getImage() == ""){
+                        myblog.setImage(blog.getImage());
+                    }
+                    return blogRepository.save(myblog);
+                });
+            if(blogList.get() != null) {
+                return responseUtils.getResponseEntity(blogList, "1", "Update blog success!", HttpStatus.OK);
+            }else {
+                return responseUtils.getResponseEntity(null, "-1", "Update blog fail!", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Update blog fail!", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/deleteblog")
-    void deleteBlog(@RequestBody Blog blog) {
-        Integer id = blog.getId();
-        blogRepository.deleteById(id);
+    public ResponseEntity<?> deleteBlog(@RequestBody Blog blog) {
+        try {
+            Integer id = blog.getId();
+            blogRepository.deleteById(id);
+            return responseUtils.getResponseEntity(blog, "1", "Delete blog success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Delete blog fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     // API BLOG //
 
     // API PROMOTION //
     @PostMapping("/listpromo")
-    List<Promotion> listPromo() {
-        return (List<Promotion>) promotionRepository.findAll();
+    public ResponseEntity<?> listPromo() {
+        try {
+            List<Promotion> promotionList = (List<Promotion>) promotionRepository.findAll();
+            return responseUtils.getResponseEntity(promotionList, "1", "Get all promotion success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get all promotion fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/newpromo")
-    Promotion newpromo(@RequestBody Promotion promotion) {
-        return promotionRepository.save(promotion);
+    public ResponseEntity<?> newpromo(@RequestBody Promotion promotion) {
+        try {
+            Promotion promotionList = promotionRepository.save(promotion);
+            return responseUtils.getResponseEntity(promotionList, "1", "Create promotion success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Create promotion fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/editpromo")
-    Promotion editpromo(@RequestBody Promotion promotion) throws Exception {
+    public ResponseEntity<?> editpromo(@RequestBody Promotion promotion) throws Exception {
+        try {
         Integer id = promotion.getId();
-        if (promotion.getImage() == ("")) {
-            return promotionRepository.findById(id).<Promotion>map(mypromo -> {
+        Optional<Promotion> promotionList = promotionRepository.findById(id).<Promotion>map(mypromo -> {
                 mypromo.setPercents(promotion.getPercents());
                 mypromo.setCoupon(promotion.getCoupon());
                 mypromo.setTimeStart(promotion.getTimeStart());
                 mypromo.setTimeEnd(promotion.getTimeEnd());
                 mypromo.setDescription(promotion.getDescription());
+                if(promotion.getImage() != null){
+                    mypromo.setImage(promotion.getImage());
+                }
                 return promotionRepository.save(mypromo);
-            }).orElseThrow(() -> new Exception("promotion " + id + " not found"));
-        } else {
-            return promotionRepository.findById(id).<Promotion>map(mypromo -> {
-                mypromo.setPercents(promotion.getPercents());
-                mypromo.setCoupon(promotion.getCoupon());
-                mypromo.setImage(promotion.getImage());
-                mypromo.setTimeStart(promotion.getTimeStart());
-                mypromo.setTimeEnd(promotion.getTimeEnd());
-                mypromo.setDescription(promotion.getDescription());
-                return promotionRepository.save(mypromo);
-            }).orElseThrow(() -> new Exception("promotion " + id + " not found"));
+            });
+            if(promotionList.get() != null) {
+                return responseUtils.getResponseEntity(promotionList, "1", "Update promotion success!", HttpStatus.OK);
+            }else {
+                return responseUtils.getResponseEntity(null, "-1", "Create promotion fail!", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Create promotion fail!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -338,90 +490,189 @@ public class RestfulAPI {
         return -1;
     }
 
-    @PostMapping("/newcart")
-    Cart findcart(@RequestBody Cart cart) {
-        Cart c = cartRepository.getCartByCustomerId(cart.getCustomerId());
-        if (c == null) {
-            cartRepository.save(cart);
+    @GetMapping("/listcart")
+    public ResponseEntity<?> findcart(Authentication authentication) {
+        try {
+            UserService u = (UserService) authentication.getPrincipal();
+            Cart cartList = cartRepository.getCartByCustomerId(u.getId());
+            return responseUtils.getResponseEntity(cartList, "1", "Get cart success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get cart fail!", HttpStatus.BAD_REQUEST);
         }
-        return cartRepository.getCartByCustomerId(cart.getCustomerId());
     }
+
     // API CART //
 
     // API CART ITEM //
     @PostMapping("/newitem")
-    Object newitem(@RequestBody CartItem cartItem) throws Exception {
-        if (cartItem.getQuantity() != 0) {
-            Optional<CartItem> items = itemRepository.findByProductIdAndCartId(cartItem.getProductId(), cartItem.getCartId());
-            if (!items.isPresent()) {
-                return itemRepository.save(cartItem);
+    public ResponseEntity<?> newitem(@RequestBody CartItem cartItem) throws Exception {
+        try {
+            if (cartItem.getQuantity() != 0) {
+                Optional<CartItem> items = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartItem.getCart().getId());
+                if (!items.isPresent()) {
+                    CartItem itemList = itemRepository.save(cartItem);
+                    return responseUtils.getResponseEntity(itemList, "1", "Get item success!", HttpStatus.OK);
+                } else {
+                    Optional<CartItem> itemList = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartItem.getCart().getId()).<CartItem>map(a -> {
+                        a.setQuantity(a.getQuantity() + cartItem.getQuantity());
+                        return itemRepository.save(a);
+                    });
+                    if(itemList.get() != null) {
+                        return responseUtils.getResponseEntity(itemList, "1", "Get item success!", HttpStatus.OK);
+                    }else {
+                        return responseUtils.getResponseEntity(null, "-1", "Get item fail!", HttpStatus.BAD_REQUEST);
+                    }
+                }
             } else {
-                return itemRepository.findByProductIdAndCartId(cartItem.getProductId(), cartItem.getCartId()).<CartItem>map(a -> {
-                    a.setQuantity(a.getQuantity() + cartItem.getQuantity());
-                    return itemRepository.save(a);
-                });
+                return responseUtils.getResponseEntity(null, "-1", "Get item fail!", HttpStatus.BAD_REQUEST);
             }
-        } else {
-            return null;
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get item fail!", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping("/listitem")
-    List<CartDTO> listitem(@RequestBody CartItem cartItem) {
-        return (List<CartDTO>) itemRepository.getByCartId(cartItem.getCartId());
+    @GetMapping("/listitem")
+    public ResponseEntity<?> listitem(Authentication authentication) {
+        try {
+            UserService u = (UserService) authentication.getPrincipal();
+            Cart cart = cartRepository.getCartByCustomerId(u.getId());
+            List<CartItem> itemList = itemRepository.getByCartId(cart.getId());
+            return responseUtils.getResponseEntity(itemList, "1", "Get item success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get item fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/removeitem")
-    String removeitem(@RequestBody CartItem cartItem) {
-        itemRepository.deleteById(cartItem.getId());
-        return "Delete Success";
+    public ResponseEntity<?> removeitem(@RequestBody CartItem cartItem) {
+        try {
+            itemRepository.deleteById(cartItem.getId());
+            return responseUtils.getResponseEntity(cartItem, "1", "Delete item success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Delete item fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/removeall")
-    String removeall(@RequestBody CartItem cartItem) {
-        itemRepository.deleteByCartId(cartItem.getCartId());
-        return "Delete Success";
+    public ResponseEntity<?> removeall(CartItem cartItem, Authentication authentication) {
+        try {
+            UserService u = (UserService) authentication.getPrincipal();
+            Cart cart = cartRepository.getCartByCustomerId(u.getId());
+            itemRepository.deleteByCartId(cart.getId());
+            return responseUtils.getResponseEntity(cartItem, "1", "Delete item success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Delete item fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API CART ITEM //
 
     // API ORDER //
     @PostMapping("/listorderbyadmin")
-    List<OrderDTO> listorderbyadmin() {
-        return (List<OrderDTO>) orderRepository.getall();
+    public ResponseEntity<?> listorderbyadmin() {
+        try {
+            List<OrderDTO> orderDTOList = orderRepository.getall();
+            return responseUtils.getResponseEntity(orderDTOList, "1", "Get order success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get order fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/listorder")
-    List<Orders> listorder(@RequestBody Orders order) {
-        return (List<Orders>) orderRepository.getOrderByCustomerId(order.getCustomerId());
+    @GetMapping("/listorder")
+    public ResponseEntity<?> listorder(Authentication authentication) {
+        try {
+            UserService u = (UserService) authentication.getPrincipal();
+            List<OrderDTO> orderDTOList = orderRepository.getOrderByCustomerId(u.getId());
+            return responseUtils.getResponseEntity(orderDTOList, "1", "Get order success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get order fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/neworder")
-    Orders neworder(@RequestBody Orders orders) {
-        return orderRepository.save(orders);
+    public ResponseEntity<?> neworder(@RequestBody Orders orders, Authentication authentication) {
+        try {
+            UserService u = (UserService) authentication.getPrincipal();
+            orders.setCustomerId(u.getId());
+            orders.setDelete(true);
+            Orders orderList = orderRepository.save(orders);
+            return responseUtils.getResponseEntity(orderList, "1", "Create order success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Create order fail!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/newordersession")
+    Orders_Sesion newordersession(@RequestBody Orders_Sesion orders_sesion) {
+        return orderSesionRepository.save(orders_sesion);
+    }
+
+    @PostMapping("/editorder")
+    public ResponseEntity<?> editorder(@RequestBody Orders orders) {
+        try {
+            Optional<Orders> orderList = orderRepository.findById(orders.getId()).<Orders>map(myorder -> {
+                myorder.setStatus(orders.getStatus());
+                return orderRepository.save(myorder);
+            });
+            if(orderList.get() != null) {
+                return responseUtils.getResponseEntity(orderList, "1", "Update order success!", HttpStatus.OK);
+            }else {
+                return responseUtils.getResponseEntity(null, "-1", "Update order fail!", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Update order fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/deleteorder")
-    void deleteorder(@RequestBody Promotion promotion) {
-        orderRepository.deleteById(promotion.getId());
+    public ResponseEntity<?> deleteorder(@RequestBody Orders orders) throws Exception {
+        try {
+            Optional<Orders> orderList = orderRepository.findById(orders.getId()).<Orders>map(myorder -> {
+                myorder.setStatus("Canceled");
+                myorder.setDelete(orders.isDelete());
+                return orderRepository.save(myorder);
+        });
+            if(orderList.get() != null) {
+                return responseUtils.getResponseEntity(orderList, "1", "Update order success!", HttpStatus.OK);
+            }else {
+                return responseUtils.getResponseEntity(null, "-1", "Update order fail!", HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Update order fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API ORDER //
 
     // API ORDER DETAIL//
-    @PostMapping("/listorderdetail")
-    List<OrderDetailsDTO> listorder(@RequestBody OrderDetails orderDetails) {
-        return (List<OrderDetailsDTO>) orderDetailRepository.getByOrderId(orderDetails.getOrderId());
+    @GetMapping("/listorderdetail")
+    public ResponseEntity<?> listorderdetail(@RequestParam(value = "id",defaultValue = "") Integer id) {
+        try {
+            List<OrderDetails> detailsList = orderDetailRepository.getByOrderId(id);
+            return responseUtils.getResponseEntity(detailsList, "1", "Get order detail success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get order detail fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/neworderdetail")
-    OrderDetails neworderdetail(@RequestBody OrderDetails orderDetails) {
-        return orderDetailRepository.save(orderDetails);
+    public ResponseEntity<?> neworderdetail(@RequestBody OrderDetails orderDetails) {
+//        try {
+            OrderDetails detailList = orderDetailRepository.save(orderDetails);
+            return responseUtils.getResponseEntity(detailList, "1", "Create order detail success!", HttpStatus.OK);
+//        }catch (Exception e){
+//            return responseUtils.getResponseEntity(null, "-1", "Create order detail fail!", HttpStatus.BAD_REQUEST);
+//        }
     }
     // API ORDER DETAIL//
 
     // API PAYMENT //
     @PostMapping("/listpayment")
-    List<Payment> listpayment() {
-        return (List<Payment>) paymentRepository.findAll();
+    public ResponseEntity<?> listpayment() {
+        try {
+            List<Payment> paymentList = (List<Payment>) paymentRepository.findAll();
+            return responseUtils.getResponseEntity(paymentList, "1", "Get payment success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get payment fail!", HttpStatus.BAD_REQUEST);
+        }
     }
     // API PAYMENT //
 

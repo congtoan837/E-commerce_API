@@ -12,11 +12,20 @@ public class UserDTO implements Serializable {
 	public UserDTO() {
 	}
 
-	public UserDTO(String username, String name, String phone, String address) {
+	public UserDTO(int id, String username, String name, String phone, String address) {
+		Id = id;
 		Username = username;
 		Name = name;
 		Phone = phone;
 		Address = address;
+	}
+
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
 	}
 
 	public String getUsername() {

@@ -56,10 +56,9 @@ public class AuthController {
             Cart c = cartRepository.getCartByCustomerId(userDetails.getId());
             if (c == null) {
                 cartRepository.insert(userDetails.getId());
-                Cart d = cartRepository.getCartByCustomerId(userDetails.getId());
-                return getResponseEntity(new JwtResponse(jwt, d.getId(), userDetails.getId(), userDetails.getUsername(), roles), "1", "Login success!", HttpStatus.OK);
+                return getResponseEntity(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles), "1", "Login success!", HttpStatus.OK);
             } else {
-                return getResponseEntity(new JwtResponse(jwt, c.getId(), userDetails.getId(), userDetails.getUsername(), roles), "1", "Login success!", HttpStatus.OK);
+                return getResponseEntity(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles), "1", "Login success!", HttpStatus.OK);
             }
         } catch (Exception e) {
             return getResponseEntity(null, "-1", "Login fail!", HttpStatus.BAD_REQUEST);
@@ -71,6 +70,7 @@ public class AuthController {
     public Object currentUserName(Authentication authentication) {
         UserService u = (UserService) authentication.getPrincipal();
         UserDTO list = new UserDTO();
+        list.setId(u.getId());
         list.setUsername(u.getUsername());
         list.setName(u.getname());
         list.setAddress(u.getAddress());

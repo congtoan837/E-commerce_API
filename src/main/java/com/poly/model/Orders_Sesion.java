@@ -4,12 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-public class Orders implements Serializable {
+public class Orders_Sesion implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
-	@Column(name = "CustomerId")
-	private int CustomerId;
+	@Column(name = "Customer")
+	private String Customer;
+	@Column(name = "Phone")
+	private String Phone;
 	@Column(name = "Promotion")
 	private String Promotion;
 	@Column(name = "Status")
@@ -22,12 +24,13 @@ public class Orders implements Serializable {
 	private boolean IsDelete;
 
 
-	public Orders() {
+	public Orders_Sesion() {
 	}
 
-	public Orders(Integer id, int customerId, String promotion, String status, int paymentId, String address, boolean isDelete) {
+	public Orders_Sesion(Integer id, String customer, String phone, String promotion, String status, int paymentId, String address, boolean isDelete) {
 		Id = id;
-		CustomerId = customerId;
+		Customer = customer;
+		Phone = phone;
 		Promotion = promotion;
 		Status = status;
 		PaymentId = paymentId;
@@ -41,12 +44,21 @@ public class Orders implements Serializable {
 	public void setId(Integer id) {
 		Id = id;
 	}
-	public int getCustomerId() {
-		return CustomerId;
+	public String getCustomer() {
+		return Customer;
 	}
-	public void setCustomerId(int customerId) {
-		CustomerId = customerId;
+	public void setCustomer(String customer) {
+		Customer = customer;
 	}
+
+	public String getPhone() {
+		return Phone;
+	}
+
+	public void setPhone(String phone) {
+		Phone = phone;
+	}
+
 	public String getPromotion() { return Promotion; }
 	public void setPromotion(String promotion) { Promotion = promotion; }
 	public String getStatus() { return Status; }

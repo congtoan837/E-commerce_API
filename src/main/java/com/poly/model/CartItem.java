@@ -2,54 +2,57 @@ package com.poly.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Properties;
 
 @Entity
 public class CartItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @Column(name = "CartId")
-    private int CartId;
-    @Column(name = "ProductId")
-    private int ProductId;
+
+    @ManyToOne
+    @JoinColumn(name = "CartId")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "ProductId")
+    private Product product;
+
     @Column(name = "Quantity")
     private int Quantity;
 
     public CartItem() {
     }
 
-    public CartItem(Integer id, int cartId, int productId, int quantity) {
-        Id = id;
-        CartId = cartId;
-        ProductId = productId;
-        this.Quantity = quantity;
-    }
-
     public Integer getId() {
         return Id;
     }
+
     public void setId(Integer id) {
         Id = id;
     }
 
-    public int getCartId() {
-        return CartId;
-    }
-    public void setCartId(int cartId) {
-        CartId = cartId;
+    public Cart getCart() {
+        return cart;
     }
 
-    public int getProductId() {
-        return ProductId;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
-    public void setProductId(int productId) {
-        ProductId = productId;
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {
         return Quantity;
     }
+
     public void setQuantity(int quantity) {
-        this.Quantity = quantity;
+        Quantity = quantity;
     }
 }
