@@ -1,18 +1,14 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Promotion")
 public class Promotion implements Serializable {
-	@Id
+
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int Id;
 	@Column(name = "percents")
@@ -24,9 +20,14 @@ public class Promotion implements Serializable {
 	@Column(name = "Description")
 	private String Description;		
 	@Column(name = "Image")
-	private String Image;	
+	private String Image;
+	@Id
 	@Column(name = "Coupon")
-	private String Coupon;	
+	private String Coupon;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 	
 	
 	public Promotion() {
@@ -84,5 +85,13 @@ public class Promotion implements Serializable {
 	}
 	public void setCoupon(String coupon) {
 		Coupon = coupon;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

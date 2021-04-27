@@ -285,7 +285,7 @@ public class RestfulAPI {
     // API BRAND //
 
     // API CATEGORY //
-    @PostMapping("/listcategory")
+    @GetMapping("/listcategory")
     public ResponseEntity<?> listcategory() {
         try {
             List<Category> categoryList = (List<Category>) categoryRepository.findAll();
@@ -505,15 +505,18 @@ public class RestfulAPI {
 
     // API CART ITEM //
     @PostMapping("/newitem")
-    public ResponseEntity<?> newitem(@RequestBody CartItem cartItem) throws Exception {
+    public ResponseEntity<?> newitem(@RequestBody CartItem cartItem, Authentication authentication) throws Exception {
         try {
+            UserService u = (UserService) authentication.getPrincipal();
+            Cart cartList = cartRepository.getCartByCustomerId(u.getId());
             if (cartItem.getQuantity() != 0) {
-                Optional<CartItem> items = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartItem.getCart().getId());
+                Optional<CartItem> items = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartList.getId());
                 if (!items.isPresent()) {
+                    cartItem.setCart(cartList);
                     CartItem itemList = itemRepository.save(cartItem);
                     return responseUtils.getResponseEntity(itemList, "1", "Get item success!", HttpStatus.OK);
                 } else {
-                    Optional<CartItem> itemList = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartItem.getCart().getId()).<CartItem>map(a -> {
+                    Optional<CartItem> itemList = itemRepository.findByProductIdAndCartId(cartItem.getProduct().getId(), cartList.getId()).<CartItem>map(a -> {
                         a.setQuantity(a.getQuantity() + cartItem.getQuantity());
                         return itemRepository.save(a);
                     });
@@ -592,7 +595,8 @@ public class RestfulAPI {
     public ResponseEntity<?> neworder(@RequestBody Orders orders, Authentication authentication) {
         try {
             UserService u = (UserService) authentication.getPrincipal();
-            orders.setCustomerId(u.getId());
+            Users users = userRepository.getByUser(u.getUsername());
+            orders.setUsers(users);
             orders.setDelete(true);
             Orders orderList = orderRepository.save(orders);
             return responseUtils.getResponseEntity(orderList, "1", "Create order success!", HttpStatus.OK);

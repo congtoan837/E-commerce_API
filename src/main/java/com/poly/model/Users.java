@@ -1,6 +1,7 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class Users implements Serializable{
 	private String Username;
 	@Column(name = "Role")
 	private String Role;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 	
 	
 	public Users() {
@@ -125,4 +130,11 @@ public class Users implements Serializable{
 		Role = role;
 	}
 
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 }

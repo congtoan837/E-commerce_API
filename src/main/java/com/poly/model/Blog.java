@@ -3,6 +3,7 @@ package com.poly.model;
 import com.sun.istack.NotNull;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.*;
 import javax.validation.*;
 import javax.validation.constraints.NotBlank;
@@ -34,6 +35,10 @@ public class Blog implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "CreateBy")
 	private Users user;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 
 	public Blog() {
 	}
@@ -84,6 +89,14 @@ public class Blog implements Serializable{
 
 	public void setUser(Users user) {
 		this.user = user;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }
 

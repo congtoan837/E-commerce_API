@@ -4,12 +4,10 @@ import java.io.Serializable;
 
 public class OrderDTO implements Serializable {
 	private int Id;
-	private String Users;
-	private String Phone;
+	private Users users;
 	private String Address;
-	private int Promotion;
-	private String Coupon;
-	private String Payment;
+	private Promotion promotion;
+	private Payment payment;
 	private String Status;
 	private long Total;
 	private String CreateTime;
@@ -17,14 +15,12 @@ public class OrderDTO implements Serializable {
 	public OrderDTO() {
 	}
 
-	public OrderDTO(int id, String users, String phone, String address, int promotion, String coupon,String payment, String status, long total) {
+	public OrderDTO(int id, Users users, String address, Promotion promotion, Payment payment, String status, long total) {
 		Id = id;
-		Users = users;
-		Phone = phone;
+		this.users = users;
 		Address = address;
-		Promotion = promotion;
-		Coupon = coupon;
-		Payment = payment;
+		this.promotion = promotion;
+		this.payment = payment;
 		Status = status;
 		Total = total;
 	}
@@ -37,20 +33,12 @@ public class OrderDTO implements Serializable {
 		Id = id;
 	}
 
-	public String getUsers() {
-		return Users;
+	public Users getUsers() {
+		return users;
 	}
 
-	public void setUsers(String users) {
-		Users = users;
-	}
-
-	public String getPhone() {
-		return Phone;
-	}
-
-	public void setPhone(String phone) {
-		Phone = phone;
+	public void setUsers(Users users) {
+		this.users = users;
 	}
 
 	public String getAddress() {
@@ -61,28 +49,20 @@ public class OrderDTO implements Serializable {
 		Address = address;
 	}
 
-	public int getPromotion() {
-		return Promotion;
+	public Promotion getPromotion() {
+		return promotion;
 	}
 
-	public void setPromotion(int promotion) {
-		Promotion = promotion;
+	public void setPromotion(Promotion promotion) {
+		this.promotion = promotion;
 	}
 
-	public String getCoupon() {
-		return Coupon;
+	public Payment getPayment() {
+		return payment;
 	}
 
-	public void setCoupon(String coupon) {
-		Coupon = coupon;
-	}
-
-	public String getPayment() {
-		return Payment;
-	}
-
-	public void setPayment(String payment) {
-		Payment = payment;
+	public void setPayment(Payment payment) {
+		this.payment = payment;
 	}
 
 	public String getStatus() {

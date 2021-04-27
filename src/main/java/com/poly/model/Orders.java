@@ -2,20 +2,29 @@ package com.poly.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 public class Orders implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer Id;
-	@Column(name = "CustomerId")
-	private int CustomerId;
-	@Column(name = "Promotion")
-	private String Promotion;
+
+	@ManyToOne
+	@JoinColumn(name = "CustomerId")
+	private Users users;
+
+	@ManyToOne
+	@JoinColumn(name = "Promotion")
+	private Promotion promotion;
+
 	@Column(name = "Status")
 	private String Status;
-	@Column(name = "PaymentId")
-	private int PaymentId;
+
+	@ManyToOne
+	@JoinColumn(name = "PaymentId")
+	private Payment payment;
+
 	@Column(name = "Address")
 	private String Address;
 	@Column(name = "IsDelete")
@@ -25,34 +34,45 @@ public class Orders implements Serializable {
 	public Orders() {
 	}
 
-	public Orders(Integer id, int customerId, String promotion, String status, int paymentId, String address, boolean isDelete) {
-		Id = id;
-		CustomerId = customerId;
-		Promotion = promotion;
-		Status = status;
-		PaymentId = paymentId;
-		Address = address;
-		IsDelete = isDelete;
-	}
-
 	public Integer getId() {
 		return Id;
 	}
+
 	public void setId(Integer id) {
 		Id = id;
 	}
-	public int getCustomerId() {
-		return CustomerId;
+
+	public Users getUsers() {
+		return users;
 	}
-	public void setCustomerId(int customerId) {
-		CustomerId = customerId;
+
+	public void setUsers(Users users) {
+		this.users = users;
 	}
-	public String getPromotion() { return Promotion; }
-	public void setPromotion(String promotion) { Promotion = promotion; }
-	public String getStatus() { return Status; }
-	public void setStatus(String status) { Status = status; }
-	public int getPaymentId() { return PaymentId; }
-	public void setPaymentId(int paymentId) { PaymentId = paymentId; }
+
+	public Promotion getPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(Promotion promotion) {
+		this.promotion = promotion;
+	}
+
+	public String getStatus() {
+		return Status;
+	}
+
+	public void setStatus(String status) {
+		Status = status;
+	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
 
 	public String getAddress() {
 		return Address;
@@ -69,4 +89,5 @@ public class Orders implements Serializable {
 	public void setDelete(boolean delete) {
 		IsDelete = delete;
 	}
+
 }

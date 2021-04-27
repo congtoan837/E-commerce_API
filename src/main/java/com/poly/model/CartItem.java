@@ -2,6 +2,7 @@ package com.poly.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Properties;
 
 @Entity
@@ -20,6 +21,10 @@ public class CartItem implements Serializable {
 
     @Column(name = "Quantity")
     private int Quantity;
+
+    @Column(name = "CreateTime")
+    @Temporal(TemporalType.DATE)
+    private Date createTime;
 
     public CartItem() {
     }
@@ -54,5 +59,13 @@ public class CartItem implements Serializable {
 
     public void setQuantity(int quantity) {
         Quantity = quantity;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

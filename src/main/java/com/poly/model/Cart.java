@@ -1,6 +1,7 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -14,6 +15,10 @@ public class Cart implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CustomerId")
 	private Users user;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 
 	public Cart() {
 	}
@@ -32,5 +37,13 @@ public class Cart implements Serializable {
 
 	public void setUser(Users user) {
 		this.user = user;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

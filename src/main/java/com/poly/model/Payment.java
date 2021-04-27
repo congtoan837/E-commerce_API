@@ -1,13 +1,9 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Payment")
@@ -19,6 +15,10 @@ public class Payment implements Serializable {
 	private String Name;
 	@Column(name = "Description", length = 50)
 	private String Description;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 
 	public Payment() {
 	}
@@ -51,5 +51,13 @@ public class Payment implements Serializable {
 
 	public void setDescription(String description) {
 		Description = description;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

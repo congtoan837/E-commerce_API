@@ -3,13 +3,9 @@ package com.poly.model;
 import com.sun.istack.NotNull;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Category")
@@ -20,6 +16,10 @@ public class Category implements Serializable{
 	@NotNull
 	@Column(name = "Name", length = 50)
     private String Name;
+
+	@Column(name = "CreateTime")
+	@Temporal(TemporalType.DATE)
+	private Date createTime;
 	
 	public Category() {
 		super();
@@ -45,5 +45,13 @@ public class Category implements Serializable{
 
 	public void setName(String name) {
 		Name = name;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }
