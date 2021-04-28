@@ -678,6 +678,16 @@ public class RestfulAPI {
             return responseUtils.getResponseEntity(null, "-1", "Get payment fail!", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/newpayment")
+    public ResponseEntity<?> listpayment(Payment payment) {
+        try {
+            List<Payment> paymentList = (List<Payment>) paymentRepository.save(payment);
+            return responseUtils.getResponseEntity(paymentList, "1", "Get payment success!", HttpStatus.OK);
+        }catch (Exception e){
+            return responseUtils.getResponseEntity(null, "-1", "Get payment fail!", HttpStatus.BAD_REQUEST);
+        }
+    }
     // API PAYMENT //
 
     // API CHART //

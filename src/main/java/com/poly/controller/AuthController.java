@@ -80,10 +80,10 @@ public class AuthController {
                     return responseUtils.getResponseEntity(null, "-1", "Username is already exists!", HttpStatus.BAD_REQUEST);
                 }
                 if (user.getPassword().length() < 6) {
-                    return responseUtils.getResponseEntity(null, "-1", "Password must be at 11 digit!", HttpStatus.BAD_REQUEST);
+                    return responseUtils.getResponseEntity(null, "-1", "Password must be at least 6 characters!", HttpStatus.BAD_REQUEST);
                 }
                 if (user.getPhone().length() < 11) {
-                    return responseUtils.getResponseEntity(null, "-1", "Number phone must be at least 6 characters!", HttpStatus.BAD_REQUEST);
+                    return responseUtils.getResponseEntity(null, "-1", "Number phone must be at 11 digit!", HttpStatus.BAD_REQUEST);
                 } else {
                     Users usersList = userRepository.save(user);
                     return responseUtils.getResponseEntity(usersList, "1", "Get user success!", HttpStatus.OK);
@@ -91,6 +91,19 @@ public class AuthController {
             } catch (Exception e) {
                 return responseUtils.getResponseEntity(null, "-1", "Get user fail!", HttpStatus.BAD_REQUEST);
             }
+    }
+
+    @RequestMapping(value = "/username")
+    @ResponseBody
+    public Object currentUserName(Authentication authentication) {
+        UserService u = (UserService) authentication.getPrincipal();
+        UserDTO list = new UserDTO();
+        list.setId(u.getId());
+        list.setUsername(u.getUsername());
+        list.setName(u.getname());
+        list.setAddress(u.getAddress());
+        list.setPhone(u.getPhone());
+        return list;
     }
 
     private ResponseEntity<?> getResponseEntity(Object data, String code, String mess, HttpStatus status) {
