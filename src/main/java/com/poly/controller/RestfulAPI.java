@@ -201,6 +201,20 @@ public class RestfulAPI {
         }
     }
 
+    @GetMapping("/filterproduct")
+    public ResponseEntity<?> Filter(@RequestParam(value = "lower") int lower, @RequestParam(value = "higher") int higher) {
+        try {
+            List<Product> productList = (List<Product>) productRepository.getByPrice(lower,higher);
+            if (productList != null) {
+                return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
+            } else {
+                return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/editproduct")
     public ResponseEntity<?> replaceEmployee(@RequestBody Product newProduct) {
         try {
