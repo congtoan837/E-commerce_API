@@ -187,6 +187,20 @@ public class RestfulAPI {
         }
     }
 
+    @GetMapping("/searchproduct")
+    public ResponseEntity<?> Search(@RequestParam(value = "search",defaultValue = "") String search) {
+        try {
+            List<Product> productList = (List<Product>) productRepository.getBySearch(search);
+            if (productList != null) {
+                return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
+            } else {
+                return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/editproduct")
     public ResponseEntity<?> replaceEmployee(@RequestBody Product newProduct) {
         try {
@@ -683,9 +697,9 @@ public class RestfulAPI {
     public ResponseEntity<?> listpayment(Payment payment) {
         try {
             List<Payment> paymentList = (List<Payment>) paymentRepository.save(payment);
-            return responseUtils.getResponseEntity(paymentList, "1", "Get payment success!", HttpStatus.OK);
+            return responseUtils.getResponseEntity(paymentList, "1", "Create payment success!", HttpStatus.OK);
         }catch (Exception e){
-            return responseUtils.getResponseEntity(null, "-1", "Get payment fail!", HttpStatus.BAD_REQUEST);
+            return responseUtils.getResponseEntity(null, "-1", "Create payment fail!", HttpStatus.BAD_REQUEST);
         }
     }
     // API PAYMENT //

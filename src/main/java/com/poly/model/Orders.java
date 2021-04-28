@@ -1,5 +1,8 @@
 package com.poly.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +33,10 @@ public class Orders implements Serializable {
 	@Column(name = "IsDelete")
 	private boolean IsDelete;
 
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CreateTime")
+	private Date CreateTime;
 
 	public Orders() {
 	}
@@ -90,4 +97,11 @@ public class Orders implements Serializable {
 		IsDelete = delete;
 	}
 
+	public Date getCreateTime() {
+		return CreateTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		CreateTime = createTime;
+	}
 }
