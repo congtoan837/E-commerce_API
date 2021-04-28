@@ -189,16 +189,16 @@ public class RestfulAPI {
 
     @GetMapping("/searchproduct")
     public ResponseEntity<?> Search(@RequestParam(value = "search",defaultValue = "") String search) {
-//        try {
+        try {
             List<Product> productList = (List<Product>) productRepository.getBySearch(search);
-//            if (productList != null) {
+            if (productList != null) {
                 return responseUtils.getResponseEntity(productList, "1", "Get product success!", HttpStatus.OK);
-//            } else {
-//                return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
-//            }
-//        } catch (Exception e) {
-//            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
-//        }
+            } else {
+                return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return responseUtils.getResponseEntity(null, "-1", "Get product fail!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/editproduct")

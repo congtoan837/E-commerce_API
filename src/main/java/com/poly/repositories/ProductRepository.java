@@ -16,7 +16,7 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	public Product getbyId(@Param("id") Integer id);
 
 	@Query("SELECT p FROM Product p WHERE p.Name like %:search% or p.brand.Name like %:search% or p.Category.Name like %:search%")
-	public Product getBySearch(@Param("search") String search);
+	public List<Product> getBySearch(@Param("search") String search);
 
 	@Query("SELECT p FROM Product p WHERE p.Category.Id = :id" )
 	public List<Product> getByCategory(@Param("id") Integer id);
