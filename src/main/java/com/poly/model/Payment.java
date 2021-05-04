@@ -23,12 +23,6 @@ public class Payment implements Serializable {
 	public Payment() {
 	}
 
-	public Payment(int id, String name, String description) {
-		Id = id;
-		Name = name;
-		Description = description;
-	}
-
 	public int getId() {
 		return Id;
 	}

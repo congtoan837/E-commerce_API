@@ -103,6 +103,9 @@ public class AuthController {
         list.setName(u.getname());
         list.setAddress(u.getAddress());
         list.setPhone(u.getPhone());
+        List<String> roles = u.getAuthorities().stream().map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+        list.setRole(roles);
         return list;
     }
 

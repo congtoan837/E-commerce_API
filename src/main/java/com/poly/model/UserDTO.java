@@ -1,6 +1,7 @@
 package com.poly.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDTO implements Serializable {
 	private int Id;
@@ -8,16 +9,9 @@ public class UserDTO implements Serializable {
 	private String Name;
 	private String Phone;
 	private String Address;
+	private List Role;
 
 	public UserDTO() {
-	}
-
-	public UserDTO(int id, String username, String name, String phone, String address) {
-		Id = id;
-		Username = username;
-		Name = name;
-		Phone = phone;
-		Address = address;
 	}
 
 	public int getId() {
@@ -59,5 +53,12 @@ public class UserDTO implements Serializable {
 	public void setAddress(String address) {
 		Address = address;
 	}
-}
 
+	public List getRole() {
+		return Role;
+	}
+
+	public void setRole(List role) {
+		Role = role;
+	}
+}

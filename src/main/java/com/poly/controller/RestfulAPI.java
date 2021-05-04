@@ -1,5 +1,8 @@
 package com.poly.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.poly.model.*;
 import com.poly.repositories.*;
 import com.poly.services.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 //@CrossOrigin(origins = {"http://localhost:8080", "https://webdemodoan.herokuapp.com"})
@@ -227,7 +232,7 @@ public class RestfulAPI {
                 product.setBrand(newProduct.getBrand());
                 product.setQuantity(newProduct.getQuantity());
                 product.setCategory(newProduct.getCategory());
-                if (product.getImage() == "") {
+                if (product.getImage() != "") {
                     product.setImage(newProduct.getImage());
                 }
                 return productRepository.save(product);
@@ -347,22 +352,22 @@ public class RestfulAPI {
     // API BLOG //
     @PostMapping("/listblog")
     public ResponseEntity<?> listblog() {
-        try {
+//        try {
             List<Blog> blogList = (List<Blog>) blogRepository.findAll();
             return responseUtils.getResponseEntity(blogList, "1", "Get all blog success!", HttpStatus.OK);
-        }catch (Exception e){
-            return responseUtils.getResponseEntity(null, "-1", "Get all blog fail!", HttpStatus.BAD_REQUEST);
-        }
+//        }catch (Exception e){
+//            return responseUtils.getResponseEntity(null, "-1", "Get all blog fail!", HttpStatus.BAD_REQUEST);
+//        }
     }
 
     @PostMapping("/newblog")
     public ResponseEntity<?> newblog(@RequestBody Blog blog) {
-        try {
-            List<Blog> blogList = (List<Blog>) blogRepository.save(blog);
+//        try {
+            Blog blogList = blogRepository.save(blog);
             return responseUtils.getResponseEntity(blogList, "1", "Create blog success!", HttpStatus.OK);
-        }catch (Exception e){
-            return responseUtils.getResponseEntity(null, "-1", "Create blog fail!", HttpStatus.BAD_REQUEST);
-        }
+//        }catch (Exception e){
+//            return responseUtils.getResponseEntity(null, "-1", "Create blog fail!", HttpStatus.BAD_REQUEST);
+//        }
     }
 
     @PostMapping("/findblog")
@@ -377,7 +382,7 @@ public class RestfulAPI {
     }
 
     @PostMapping("/editblog")
-    public ResponseEntity<?> replaceBlog(@RequestBody Blog blog) {
+    public ResponseEntity<?> replaceBlog(@RequestBody Blog blog, @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
             Integer id = blog.getId();
             Optional<Blog> blogList = blogRepository.findById(id).<Blog>map(myblog -> {
@@ -385,7 +390,17 @@ public class RestfulAPI {
                     myblog.setDescription(blog.getDescription());
                     myblog.setContent(blog.getContent());
                     myblog.setUser(blog.getUser());
-                    if(blog.getImage() == ""){
+                    if(blog.getImage() != ""){
+                        String nameImage = "app";
+                        try {
+                            byte[] bytes = file.getBytes();
+                            BufferedOutputStream stream =
+                                    new BufferedOutputStream(new FileOutputStream(new File(nameImage + "-uploaded")));
+                            stream.write(bytes);
+                            stream.close();
+                        } catch (Exception e) {
+
+                        }
                         myblog.setImage(blog.getImage());
                     }
                     return blogRepository.save(myblog);
@@ -708,9 +723,9 @@ public class RestfulAPI {
     }
 
     @PostMapping("/newpayment")
-    public ResponseEntity<?> listpayment(Payment payment) {
+    public ResponseEntity<?> listpayment(@RequestBody Payment payment) {
         try {
-            List<Payment> paymentList = (List<Payment>) paymentRepository.save(payment);
+            Payment paymentList = paymentRepository.save(payment);
             return responseUtils.getResponseEntity(paymentList, "1", "Create payment success!", HttpStatus.OK);
         }catch (Exception e){
             return responseUtils.getResponseEntity(null, "-1", "Create payment fail!", HttpStatus.BAD_REQUEST);
