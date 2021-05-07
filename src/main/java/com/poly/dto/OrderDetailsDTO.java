@@ -1,4 +1,6 @@
-package com.poly.model;
+package com.poly.dto;
+
+import com.poly.model.Product;
 
 import java.io.Serializable;
 import java.util.List;

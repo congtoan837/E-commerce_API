@@ -1,4 +1,8 @@
-package com.poly.model;
+package com.poly.dto;
+
+import com.poly.model.Payment;
+import com.poly.model.Promotion;
+import com.poly.model.Users;
 
 import java.io.Serializable;
 
