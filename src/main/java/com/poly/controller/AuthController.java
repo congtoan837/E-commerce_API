@@ -73,17 +73,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> authenticateUser(@RequestBody Users user) {
-            if (user.getName() == "" || user.getUsername() == "" || user.getPassword() == "" || user.getStatus() == "" || user.getPhone() == "") {
-                return responseUtils.getResponseEntity(null, "-1", "Create user fail!", HttpStatus.BAD_REQUEST);
-            }
             try {
                 if (userRepository.getByUser(user.getUsername()) != null) {
                     return responseUtils.getResponseEntity(null, "-1", "Username is already exists!", HttpStatus.BAD_REQUEST);
                 }
-                if (user.getPassword().length() < 6) {
+                else if(user.getPassword().length() < 6) {
                     return responseUtils.getResponseEntity(null, "-1", "Password must be at least 6 characters!", HttpStatus.BAD_REQUEST);
                 }
-                if (user.getPhone().length() < 11) {
+                else if(user.getPhone().length() < 10) {
                     return responseUtils.getResponseEntity(null, "-1", "Number phone must be at 11 digit!", HttpStatus.BAD_REQUEST);
                 } else {
                     Users usersList = userRepository.save(user);
